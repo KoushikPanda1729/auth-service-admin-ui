@@ -1,0 +1,17 @@
+# Production Docker Compose
+
+services:
+  admin-ui:
+    build:
+      context: ../..
+      dockerfile: docker/prod/Dockerfile
+    container_name: admin-ui-prod
+    ports:
+      - "8080:3000"
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
