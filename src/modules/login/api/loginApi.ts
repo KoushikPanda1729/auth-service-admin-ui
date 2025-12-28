@@ -4,6 +4,7 @@ import type {
   LoginResponse,
   RefreshTokenResponse,
   LogoutResponse,
+  JWKSResponse,
   User,
 } from "./types";
 
@@ -25,6 +26,11 @@ export const loginApi = {
 
   self: async (): Promise<User> => {
     const response = await axiosInstance.get<User>("/auth/self");
+    return response.data;
+  },
+
+  getJWKS: async (): Promise<JWKSResponse> => {
+    const response = await axiosInstance.get<JWKSResponse>("/.well-known/jwks.json");
     return response.data;
   },
 };
