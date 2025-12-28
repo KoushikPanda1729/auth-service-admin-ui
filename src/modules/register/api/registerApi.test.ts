@@ -4,23 +4,11 @@ import { setupServer } from "msw/node";
 import { registerApi } from "./registerApi";
 import type { RegisterResponse } from "./types";
 
-const API_BASE_URL = "http://localhost:3000/api";
+const API_BASE_URL = "http://localhost:5501/api";
 
 // Mock responses
 const mockRegisterSuccess: RegisterResponse = {
-  success: true,
-  message: "Registration successful",
-  data: {
-    user: {
-      id: "1",
-      email: "newuser@example.com",
-      name: "New User",
-      role: "user",
-      createdAt: "2024-01-01",
-      updatedAt: "2024-01-01",
-    },
-    token: "mock-jwt-token",
-  },
+  id: 1,
 };
 
 // Setup MSW server
@@ -38,7 +26,8 @@ describe("Register API", () => {
   describe("registerApi.register", () => {
     it("should register successfully with valid data", async () => {
       const userData = {
-        name: "New User",
+        firstName: "New",
+        lastName: "User",
         email: "newuser@example.com",
         password: "password123",
         confirmPassword: "password123",
@@ -46,10 +35,7 @@ describe("Register API", () => {
 
       const response = await registerApi.register(userData);
 
-      expect(response.success).toBe(true);
-      expect(response.data.user.email).toBe("newuser@example.com");
-      expect(response.data.user.name).toBe("New User");
-      expect(response.data.token).toBeDefined();
+      expect(response.id).toBe(1);
     });
 
     it("should not send confirmPassword to the API", async () => {
@@ -63,7 +49,8 @@ describe("Register API", () => {
       );
 
       const userData = {
-        name: "New User",
+        firstName: "New",
+        lastName: "User",
         email: "newuser@example.com",
         password: "password123",
         confirmPassword: "password123",
@@ -72,7 +59,8 @@ describe("Register API", () => {
       await registerApi.register(userData);
 
       expect(requestBody).not.toHaveProperty("confirmPassword");
-      expect(requestBody).toHaveProperty("name");
+      expect(requestBody).toHaveProperty("firstName");
+      expect(requestBody).toHaveProperty("lastName");
       expect(requestBody).toHaveProperty("email");
       expect(requestBody).toHaveProperty("password");
     });
@@ -91,7 +79,8 @@ describe("Register API", () => {
       );
 
       const userData = {
-        name: "Test User",
+        firstName: "Test",
+        lastName: "User",
         email: "existing@example.com",
         password: "password123",
         confirmPassword: "password123",
@@ -108,7 +97,8 @@ describe("Register API", () => {
       );
 
       const userData = {
-        name: "Test User",
+        firstName: "Test",
+        lastName: "User",
         email: "test@example.com",
         password: "password123",
         confirmPassword: "password123",
@@ -135,7 +125,8 @@ describe("Register API", () => {
       );
 
       const userData = {
-        name: "Test User",
+        firstName: "Test",
+        lastName: "User",
         email: "invalid",
         password: "123",
         confirmPassword: "123",
@@ -158,7 +149,8 @@ describe("Register API", () => {
       );
 
       const userData = {
-        name: "Test User",
+        firstName: "Test",
+        lastName: "User",
         email: "test@example.com",
         password: "password123",
         confirmPassword: "password123",

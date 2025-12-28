@@ -34,7 +34,8 @@ describe("RegisterForm Component", () => {
   it("should render all form fields", () => {
     renderWithProviders(<RegisterForm />);
 
-    expect(screen.getByPlaceholderText(/enter your full name/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/enter your first name/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/enter your last name/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/enter your email/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/^enter your password$/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/confirm your password/i)).toBeInTheDocument();
@@ -49,25 +50,26 @@ describe("RegisterForm Component", () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/name is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/first name is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/last name is required/i)).toBeInTheDocument();
       expect(screen.getByText(/email is required/i)).toBeInTheDocument();
       expect(screen.getByText(/password is required/i)).toBeInTheDocument();
       expect(screen.getByText(/please confirm your password/i)).toBeInTheDocument();
     });
   });
 
-  it("should show error for short name", async () => {
+  it("should show error for short first name", async () => {
     const user = userEvent.setup();
     renderWithProviders(<RegisterForm />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your full name/i);
+    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i);
     const submitButton = screen.getByRole("button", { name: /sign up/i });
 
-    await user.type(nameInput, "A");
+    await user.type(firstNameInput, "A");
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/name must be at least 2 characters/i)).toBeInTheDocument();
+      expect(screen.getByText(/first name must be at least 2 characters/i)).toBeInTheDocument();
     });
   });
 
@@ -90,12 +92,14 @@ describe("RegisterForm Component", () => {
     const user = userEvent.setup();
     renderWithProviders(<RegisterForm />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your full name/i);
+    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i);
+    const lastNameInput = screen.getByPlaceholderText(/enter your last name/i);
     const emailInput = screen.getByPlaceholderText(/enter your email/i);
     const passwordInput = screen.getByPlaceholderText(/^enter your password$/i);
     const submitButton = screen.getByRole("button", { name: /sign up/i });
 
-    await user.type(nameInput, "John Doe");
+    await user.type(firstNameInput, "John");
+    await user.type(lastNameInput, "Doe");
     await user.type(emailInput, "john@example.com");
     await user.type(passwordInput, "12345");
     await user.click(submitButton);
@@ -109,13 +113,15 @@ describe("RegisterForm Component", () => {
     const user = userEvent.setup();
     renderWithProviders(<RegisterForm />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your full name/i);
+    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i);
+    const lastNameInput = screen.getByPlaceholderText(/enter your last name/i);
     const emailInput = screen.getByPlaceholderText(/enter your email/i);
     const passwordInput = screen.getByPlaceholderText(/^enter your password$/i);
     const confirmPasswordInput = screen.getByPlaceholderText(/confirm your password/i);
     const submitButton = screen.getByRole("button", { name: /sign up/i });
 
-    await user.type(nameInput, "John Doe");
+    await user.type(firstNameInput, "John");
+    await user.type(lastNameInput, "Doe");
     await user.type(emailInput, "john@example.com");
     await user.type(passwordInput, "password123");
     await user.type(confirmPasswordInput, "password456");
@@ -130,21 +136,21 @@ describe("RegisterForm Component", () => {
     const user = userEvent.setup();
     renderWithProviders(<RegisterForm />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your full name/i);
+    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i);
     const submitButton = screen.getByRole("button", { name: /sign up/i });
 
     // Submit to trigger validation
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/name is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/first name is required/i)).toBeInTheDocument();
     });
 
     // Type to clear error
-    await user.type(nameInput, "John Doe");
+    await user.type(firstNameInput, "John");
 
     await waitFor(() => {
-      expect(screen.queryByText(/name is required/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/first name is required/i)).not.toBeInTheDocument();
     });
   });
 
@@ -152,30 +158,20 @@ describe("RegisterForm Component", () => {
     const user = userEvent.setup();
 
     vi.mocked(registerApi.registerApi.register).mockResolvedValue({
-      success: true,
-      message: "Registration successful",
-      data: {
-        user: {
-          id: "1",
-          email: "newuser@example.com",
-          name: "New User",
-          role: "user",
-          createdAt: "2024-01-01",
-          updatedAt: "2024-01-01",
-        },
-        token: "mock-token",
-      },
+      id: 1,
     });
 
     renderWithProviders(<RegisterForm />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your full name/i);
+    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i);
+    const lastNameInput = screen.getByPlaceholderText(/enter your last name/i);
     const emailInput = screen.getByPlaceholderText(/enter your email/i);
     const passwordInput = screen.getByPlaceholderText(/^enter your password$/i);
     const confirmPasswordInput = screen.getByPlaceholderText(/confirm your password/i);
     const submitButton = screen.getByRole("button", { name: /sign up/i });
 
-    await user.type(nameInput, "New User");
+    await user.type(firstNameInput, "New");
+    await user.type(lastNameInput, "User");
     await user.type(emailInput, "newuser@example.com");
     await user.type(passwordInput, "password123");
     await user.type(confirmPasswordInput, "password123");
@@ -183,7 +179,8 @@ describe("RegisterForm Component", () => {
 
     await waitFor(() => {
       expect(registerApi.registerApi.register).toHaveBeenCalledWith({
-        name: "New User",
+        firstName: "New",
+        lastName: "User",
         email: "newuser@example.com",
         password: "password123",
         confirmPassword: "password123",
@@ -192,7 +189,7 @@ describe("RegisterForm Component", () => {
 
     await waitFor(
       () => {
-        expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+        expect(mockNavigate).toHaveBeenCalledWith("/login");
       },
       { timeout: 2000 }
     );
@@ -207,13 +204,15 @@ describe("RegisterForm Component", () => {
 
     renderWithProviders(<RegisterForm />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your full name/i);
+    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i);
+    const lastNameInput = screen.getByPlaceholderText(/enter your last name/i);
     const emailInput = screen.getByPlaceholderText(/enter your email/i);
     const passwordInput = screen.getByPlaceholderText(/^enter your password$/i);
     const confirmPasswordInput = screen.getByPlaceholderText(/confirm your password/i);
     const submitButton = screen.getByRole("button", { name: /sign up/i });
 
-    await user.type(nameInput, "New User");
+    await user.type(firstNameInput, "New");
+    await user.type(lastNameInput, "User");
     await user.type(emailInput, "newuser@example.com");
     await user.type(passwordInput, "password123");
     await user.type(confirmPasswordInput, "password123");
@@ -245,13 +244,15 @@ describe("RegisterForm Component", () => {
 
     renderWithProviders(<RegisterForm />);
 
-    const nameInput = screen.getByPlaceholderText(/enter your full name/i);
+    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i);
+    const lastNameInput = screen.getByPlaceholderText(/enter your last name/i);
     const emailInput = screen.getByPlaceholderText(/enter your email/i);
     const passwordInput = screen.getByPlaceholderText(/^enter your password$/i);
     const confirmPasswordInput = screen.getByPlaceholderText(/confirm your password/i);
     const submitButton = screen.getByRole("button", { name: /sign up/i });
 
-    await user.type(nameInput, "Test User");
+    await user.type(firstNameInput, "Test");
+    await user.type(lastNameInput, "User");
     await user.type(emailInput, "existing@example.com");
     await user.type(passwordInput, "password123");
     await user.type(confirmPasswordInput, "password123");

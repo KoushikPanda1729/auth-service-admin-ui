@@ -51,24 +51,12 @@ describe("useRegister Hook", () => {
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBeNull();
     expect(result.current.success).toBe(false);
-    expect(result.current.user).toBeNull();
+    expect(result.current.userId).toBeNull();
   });
 
   it("should handle successful registration", async () => {
     vi.mocked(registerApi.registerApi.register).mockResolvedValue({
-      success: true,
-      message: "Registration successful",
-      data: {
-        user: {
-          id: "1",
-          email: "newuser@example.com",
-          name: "New User",
-          role: "user",
-          createdAt: "2024-01-01",
-          updatedAt: "2024-01-01",
-        },
-        token: "mock-token",
-      },
+      id: 1,
     });
 
     const { result } = renderHook(() => useRegister(), {
@@ -76,7 +64,8 @@ describe("useRegister Hook", () => {
     });
 
     await result.current.handleRegister({
-      name: "New User",
+      firstName: "New",
+      lastName: "User",
       email: "newuser@example.com",
       password: "password123",
       confirmPassword: "password123",
@@ -84,7 +73,7 @@ describe("useRegister Hook", () => {
 
     await waitFor(
       () => {
-        expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+        expect(mockNavigate).toHaveBeenCalledWith("/login");
       },
       { timeout: 2000 }
     );
@@ -101,7 +90,8 @@ describe("useRegister Hook", () => {
     });
 
     await result.current.handleRegister({
-      name: "Test User",
+      firstName: "Test",
+      lastName: "User",
       email: "existing@example.com",
       password: "password123",
       confirmPassword: "password123",
@@ -129,7 +119,7 @@ describe("useRegister Hook", () => {
 
     result.current.resetState();
 
-    expect(result.current.user).toBeNull();
+    expect(result.current.userId).toBeNull();
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBeNull();
     expect(result.current.success).toBe(false);

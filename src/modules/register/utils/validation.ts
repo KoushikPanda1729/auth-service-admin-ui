@@ -1,27 +1,38 @@
 import { VALIDATION_RULES } from "../../../utils/constants";
 
 export interface ValidationErrors {
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   password?: string;
   confirmPassword?: string;
 }
 
 export const validateRegisterForm = (
-  name: string,
+  firstName: string,
+  lastName: string,
   email: string,
   password: string,
   confirmPassword: string
 ): ValidationErrors => {
   const errors: ValidationErrors = {};
 
-  // Name validation
-  if (!name) {
-    errors.name = "Name is required";
-  } else if (name.length < VALIDATION_RULES.NAME.MIN_LENGTH) {
-    errors.name = `Name must be at least ${VALIDATION_RULES.NAME.MIN_LENGTH} characters`;
-  } else if (name.length > VALIDATION_RULES.NAME.MAX_LENGTH) {
-    errors.name = `Name must not exceed ${VALIDATION_RULES.NAME.MAX_LENGTH} characters`;
+  // First name validation
+  if (!firstName) {
+    errors.firstName = "First name is required";
+  } else if (firstName.length < VALIDATION_RULES.NAME.MIN_LENGTH) {
+    errors.firstName = `First name must be at least ${VALIDATION_RULES.NAME.MIN_LENGTH} characters`;
+  } else if (firstName.length > VALIDATION_RULES.NAME.MAX_LENGTH) {
+    errors.firstName = `First name must not exceed ${VALIDATION_RULES.NAME.MAX_LENGTH} characters`;
+  }
+
+  // Last name validation
+  if (!lastName) {
+    errors.lastName = "Last name is required";
+  } else if (lastName.length < VALIDATION_RULES.NAME.MIN_LENGTH) {
+    errors.lastName = `Last name must be at least ${VALIDATION_RULES.NAME.MIN_LENGTH} characters`;
+  } else if (lastName.length > VALIDATION_RULES.NAME.MAX_LENGTH) {
+    errors.lastName = `Last name must not exceed ${VALIDATION_RULES.NAME.MAX_LENGTH} characters`;
   }
 
   // Email validation

@@ -12,7 +12,8 @@ const { Text } = Typography;
 
 const RegisterForm = () => {
   const { loading, handleRegister } = useRegister();
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -21,20 +22,33 @@ const RegisterForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validationErrors = validateRegisterForm(name, email, password, confirmPassword);
+    const validationErrors = validateRegisterForm(
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword
+    );
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
     setErrors({});
-    await handleRegister({ name, email, password, confirmPassword });
+    await handleRegister({ firstName, lastName, email, password, confirmPassword });
   };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-    if (errors.name) {
-      setErrors((prev) => ({ ...prev, name: undefined }));
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFirstName(e.target.value);
+    if (errors.firstName) {
+      setErrors((prev) => ({ ...prev, firstName: undefined }));
+    }
+  };
+
+  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLastName(e.target.value);
+    if (errors.lastName) {
+      setErrors((prev) => ({ ...prev, lastName: undefined }));
     }
   };
 
@@ -74,11 +88,19 @@ const RegisterForm = () => {
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-          placeholder="Enter your full name"
+          placeholder="Enter your first name"
           prefix={<UserOutlined className="text-gray-400" />}
-          value={name}
-          onChange={handleNameChange}
-          error={errors.name}
+          value={firstName}
+          onChange={handleFirstNameChange}
+          error={errors.firstName}
+        />
+
+        <Input
+          placeholder="Enter your last name"
+          prefix={<UserOutlined className="text-gray-400" />}
+          value={lastName}
+          onChange={handleLastNameChange}
+          error={errors.lastName}
         />
 
         <Input

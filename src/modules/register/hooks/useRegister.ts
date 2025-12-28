@@ -8,14 +8,14 @@ export const useRegister = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { user, loading, error, success } = useAppSelector((state) => state.register);
+  const { userId, loading, error, success } = useAppSelector((state) => state.register);
 
   const handleRegister = async (userData: RegisterRequest) => {
     try {
       await dispatch(register(userData)).unwrap();
-      notification.success("Registration successful! Redirecting to dashboard...");
+      notification.success("Registration successful! Redirecting to login...");
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/login");
       }, 1000);
     } catch (err) {
       const error = err as { message?: string };
@@ -32,7 +32,7 @@ export const useRegister = () => {
   };
 
   return {
-    user,
+    userId,
     loading,
     error,
     success,

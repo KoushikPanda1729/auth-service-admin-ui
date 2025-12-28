@@ -3,28 +3,12 @@ import { configureStore } from "@reduxjs/toolkit";
 import registerReducer, { register, clearError, resetRegisterState } from "./registerSlice";
 import type { RegisterResponse } from "../api/types";
 import * as registerApi from "../api/registerApi";
-import * as storage from "../../../services/storage/localStorage";
 
-// Mock the API and storage
+// Mock the API
 vi.mock("../api/registerApi");
-vi.mock("../../../services/storage/localStorage");
-
-const mockUser = {
-  id: "1",
-  email: "newuser@example.com",
-  name: "New User",
-  role: "user",
-  createdAt: "2024-01-01",
-  updatedAt: "2024-01-01",
-};
 
 const mockRegisterResponse: RegisterResponse = {
-  success: true,
-  message: "Registration successful",
-  data: {
-    user: mockUser,
-    token: "mock-token",
-  },
+  id: 1,
 };
 
 describe("Register Redux Slice", () => {
@@ -44,8 +28,7 @@ describe("Register Redux Slice", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const state = (store.getState() as any).register;
       expect(state).toEqual({
-        user: null,
-        token: null,
+        userId: null,
         loading: false,
         error: null,
         success: false,
@@ -76,8 +59,7 @@ describe("Register Redux Slice", () => {
       store.dispatch(resetRegisterState());
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const state = (store.getState() as any).register;
-      expect(state.user).toBeNull();
-      expect(state.token).toBeNull();
+      expect(state.userId).toBeNull();
       expect(state.loading).toBe(false);
       expect(state.error).toBeNull();
       expect(state.success).toBe(false);
@@ -103,7 +85,8 @@ describe("Register Redux Slice", () => {
 
       await store.dispatch(
         register({
-          name: "New User",
+          firstName: "New",
+          lastName: "User",
           email: "newuser@example.com",
           password: "password123",
           confirmPassword: "password123",
@@ -115,13 +98,8 @@ describe("Register Redux Slice", () => {
       const state = (store.getState() as any).register;
       expect(state.loading).toBe(false);
       expect(state.success).toBe(true);
-      expect(state.user).toEqual(mockUser);
-      expect(state.token).toBe("mock-token");
+      expect(state.userId).toBe(1);
       expect(state.error).toBeNull();
-
-      // Verify storage was called
-      expect(storage.setToken).toHaveBeenCalledWith("mock-token");
-      expect(storage.setUser).toHaveBeenCalledWith(mockUser);
     });
 
     it("should handle register.rejected", async () => {
@@ -132,7 +110,8 @@ describe("Register Redux Slice", () => {
 
       await store.dispatch(
         register({
-          name: "Test User",
+          firstName: "Test",
+          lastName: "User",
           email: "existing@example.com",
           password: "password123",
           confirmPassword: "password123",
@@ -145,8 +124,7 @@ describe("Register Redux Slice", () => {
       expect(state.loading).toBe(false);
       expect(state.success).toBe(false);
       expect(state.error).toBe(errorMessage);
-      expect(state.user).toBeNull();
-      expect(state.token).toBeNull();
+      expect(state.userId).toBeNull();
     });
 
     it("should handle register.rejected with default error message", async () => {
@@ -154,7 +132,8 @@ describe("Register Redux Slice", () => {
 
       await store.dispatch(
         register({
-          name: "Test User",
+          firstName: "Test",
+          lastName: "User",
           email: "test@example.com",
           password: "password123",
           confirmPassword: "password123",

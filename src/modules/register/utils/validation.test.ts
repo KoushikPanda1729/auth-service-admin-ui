@@ -5,7 +5,8 @@ describe("Register Validation Utils", () => {
   describe("validateRegisterForm", () => {
     it("should return no errors for valid input", () => {
       const errors = validateRegisterForm(
-        "John Doe",
+        "John",
+        "Doe",
         "john@example.com",
         "password123",
         "password123"
@@ -13,24 +14,59 @@ describe("Register Validation Utils", () => {
       expect(Object.keys(errors)).toHaveLength(0);
     });
 
-    it("should return error when name is empty", () => {
-      const errors = validateRegisterForm("", "john@example.com", "password123", "password123");
-      expect(errors.name).toBe("Name is required");
+    it("should return error when firstName is empty", () => {
+      const errors = validateRegisterForm(
+        "",
+        "Doe",
+        "john@example.com",
+        "password123",
+        "password123"
+      );
+      expect(errors.firstName).toBe("First name is required");
     });
 
-    it("should return error when name is too short", () => {
-      const errors = validateRegisterForm("J", "john@example.com", "password123", "password123");
-      expect(errors.name).toBe("Name must be at least 2 characters");
+    it("should return error when firstName is too short", () => {
+      const errors = validateRegisterForm(
+        "J",
+        "Doe",
+        "john@example.com",
+        "password123",
+        "password123"
+      );
+      expect(errors.firstName).toBe("First name must be at least 2 characters");
+    });
+
+    it("should return error when lastName is empty", () => {
+      const errors = validateRegisterForm(
+        "John",
+        "",
+        "john@example.com",
+        "password123",
+        "password123"
+      );
+      expect(errors.lastName).toBe("Last name is required");
+    });
+
+    it("should return error when lastName is too short", () => {
+      const errors = validateRegisterForm(
+        "John",
+        "D",
+        "john@example.com",
+        "password123",
+        "password123"
+      );
+      expect(errors.lastName).toBe("Last name must be at least 2 characters");
     });
 
     it("should return error when email is empty", () => {
-      const errors = validateRegisterForm("John Doe", "", "password123", "password123");
+      const errors = validateRegisterForm("John", "Doe", "", "password123", "password123");
       expect(errors.email).toBe("Email is required");
     });
 
     it("should return error when email format is invalid", () => {
       const errors = validateRegisterForm(
-        "John Doe",
+        "John",
+        "Doe",
         "invalid-email",
         "password123",
         "password123"
@@ -39,23 +75,24 @@ describe("Register Validation Utils", () => {
     });
 
     it("should return error when password is empty", () => {
-      const errors = validateRegisterForm("John Doe", "john@example.com", "", "password123");
+      const errors = validateRegisterForm("John", "Doe", "john@example.com", "", "password123");
       expect(errors.password).toBe("Password is required");
     });
 
     it("should return error when password is too short", () => {
-      const errors = validateRegisterForm("John Doe", "john@example.com", "12345", "12345");
+      const errors = validateRegisterForm("John", "Doe", "john@example.com", "12345", "12345");
       expect(errors.password).toBe("Password must be at least 6 characters");
     });
 
     it("should return error when confirm password is empty", () => {
-      const errors = validateRegisterForm("John Doe", "john@example.com", "password123", "");
+      const errors = validateRegisterForm("John", "Doe", "john@example.com", "password123", "");
       expect(errors.confirmPassword).toBe("Please confirm your password");
     });
 
     it("should return error when passwords do not match", () => {
       const errors = validateRegisterForm(
-        "John Doe",
+        "John",
+        "Doe",
         "john@example.com",
         "password123",
         "password456"
@@ -64,8 +101,9 @@ describe("Register Validation Utils", () => {
     });
 
     it("should return multiple errors when multiple fields are invalid", () => {
-      const errors = validateRegisterForm("", "invalid-email", "123", "456");
-      expect(errors.name).toBe("Name is required");
+      const errors = validateRegisterForm("", "", "invalid-email", "123", "456");
+      expect(errors.firstName).toBe("First name is required");
+      expect(errors.lastName).toBe("Last name is required");
       expect(errors.email).toBe("Please enter a valid email address");
       expect(errors.password).toBe("Password must be at least 6 characters");
       expect(errors.confirmPassword).toBe("Passwords do not match");
@@ -80,7 +118,7 @@ describe("Register Validation Utils", () => {
       ];
 
       validEmails.forEach((email) => {
-        const errors = validateRegisterForm("John Doe", email, "password123", "password123");
+        const errors = validateRegisterForm("John", "Doe", email, "password123", "password123");
         expect(errors.email).toBeUndefined();
       });
     });
@@ -89,7 +127,7 @@ describe("Register Validation Utils", () => {
       const invalidEmails = ["plaintext", "@example.com", "user@", "user @example.com"];
 
       invalidEmails.forEach((email) => {
-        const errors = validateRegisterForm("John Doe", email, "password123", "password123");
+        const errors = validateRegisterForm("John", "Doe", email, "password123", "password123");
         expect(errors.email).toBe("Please enter a valid email address");
       });
     });
