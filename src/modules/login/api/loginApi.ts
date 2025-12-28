@@ -1,5 +1,5 @@
 import axiosInstance from "../../../services/api/axios.config";
-import type { LoginRequest, LoginResponse, RefreshTokenResponse } from "./types";
+import type { LoginRequest, LoginResponse, RefreshTokenResponse, User } from "./types";
 
 export const loginApi = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
@@ -15,6 +15,11 @@ export const loginApi = {
     const response = await axiosInstance.post<RefreshTokenResponse>("/auth/refresh", {
       token: oldToken,
     });
+    return response.data;
+  },
+
+  self: async (): Promise<User> => {
+    const response = await axiosInstance.get<User>("/auth/self");
     return response.data;
   },
 };

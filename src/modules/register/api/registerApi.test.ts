@@ -4,7 +4,7 @@ import { setupServer } from "msw/node";
 import { registerApi } from "./registerApi";
 import type { RegisterResponse } from "./types";
 
-const API_BASE_URL = "http://localhost:5501/api";
+const API_BASE_URL = "http://localhost:5501";
 
 // Mock responses
 const mockRegisterSuccess: RegisterResponse = {

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { register, clearError, resetRegisterState } from "../store/registerSlice";
+import { fetchUser } from "../../login/store/loginSlice";
 import type { RegisterRequest } from "../api/types";
 import { notification } from "../../../services/notification/notification";
 
@@ -13,6 +14,7 @@ export const useRegister = () => {
   const handleRegister = async (userData: RegisterRequest) => {
     try {
       await dispatch(register(userData)).unwrap();
+      await dispatch(fetchUser()).unwrap();
       notification.success("Registration successful! Redirecting to dashboard...");
       setTimeout(() => {
         navigate("/dashboard");

@@ -7,9 +7,11 @@ import type { ReactNode } from "react";
 import { useRegister } from "./useRegister";
 import rootReducer from "../../../app/rootReducer";
 import * as registerApi from "../api/registerApi";
+import * as loginApi from "../../login/api/loginApi";
 
 // Mock dependencies
 vi.mock("../api/registerApi");
+vi.mock("../../login/api/loginApi");
 vi.mock("../../../services/notification/notification", () => ({
   notification: {
     success: vi.fn(),
@@ -57,6 +59,14 @@ describe("useRegister Hook", () => {
   it("should handle successful registration", async () => {
     vi.mocked(registerApi.registerApi.register).mockResolvedValue({
       id: 1,
+    });
+
+    vi.mocked(loginApi.loginApi.self).mockResolvedValue({
+      id: 1,
+      firstName: "New",
+      lastName: "User",
+      email: "newuser@example.com",
+      role: "customer",
     });
 
     const { result } = renderHook(() => useRegister(), {

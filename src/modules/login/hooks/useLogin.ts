@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { login, logout, clearError } from "../store/loginSlice";
+import { login, logout, clearError, fetchUser } from "../store/loginSlice";
 import type { LoginRequest } from "../api/types";
 import { notification } from "../../../services/notification/notification";
 
@@ -8,11 +8,12 @@ export const useLogin = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { userId, isAuthenticated, loading, error } = useAppSelector((state) => state.login);
+  const { user, isAuthenticated, loading, error } = useAppSelector((state) => state.login);
 
   const handleLogin = async (credentials: LoginRequest) => {
     try {
       await dispatch(login(credentials)).unwrap();
+      await dispatch(fetchUser()).unwrap();
       notification.success("Login successful!");
       navigate("/dashboard");
     } catch (err) {
@@ -37,7 +38,7 @@ export const useLogin = () => {
   };
 
   return {
-    userId,
+    user,
     isAuthenticated,
     loading,
     error,

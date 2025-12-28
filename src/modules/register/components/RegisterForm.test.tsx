@@ -4,9 +4,11 @@ import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "../../../__tests__/test-utils";
 import RegisterForm from "./RegisterForm";
 import * as registerApi from "../api/registerApi";
+import * as loginApi from "../../login/api/loginApi";
 
 // Mock dependencies
 vi.mock("../api/registerApi");
+vi.mock("../../login/api/loginApi");
 vi.mock("../../../services/notification/notification", () => ({
   notification: {
     success: vi.fn(),
@@ -159,6 +161,14 @@ describe("RegisterForm Component", () => {
 
     vi.mocked(registerApi.registerApi.register).mockResolvedValue({
       id: 1,
+    });
+
+    vi.mocked(loginApi.loginApi.self).mockResolvedValue({
+      id: 1,
+      firstName: "New",
+      lastName: "User",
+      email: "newuser@example.com",
+      role: "customer",
     });
 
     renderWithProviders(<RegisterForm />);

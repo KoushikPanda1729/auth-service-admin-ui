@@ -1,16 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { loginApi } from "../api/loginApi";
-import type { LoginRequest, LoginResponse } from "../api/types";
+import type { LoginRequest, LoginResponse, User } from "../api/types";
 
 interface LoginState {
-  userId: number | null;
+  user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: LoginState = {
-  userId: null,
+  user: null,
   isAuthenticated: false,
   loading: false,
   error: null,
@@ -38,6 +38,19 @@ export const logout = createAsyncThunk("login/logout", async (_, { rejectWithVal
   }
 });
 
+export const fetchUser = createAsyncThunk<User>(
+  "login/fetchUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const user = await loginApi.self();
+      return user;
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || "Failed to fetch user");
+    }
+  }
+);
+
 const loginSlice = createSlice({
   name: "login",
   initialState,
@@ -52,10 +65,9 @@ const loginSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(login.fulfilled, (state) => {
         state.loading = false;
         state.isAuthenticated = true;
-        state.userId = action.payload.id;
         state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
@@ -69,14 +81,29 @@ const loginSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.loading = false;
         state.isAuthenticated = false;
-        state.userId = null;
+        state.user = null;
         state.error = null;
       })
       .addCase(logout.rejected, (state) => {
         state.loading = false;
         state.isAuthenticated = false;
-        state.userId = null;
+        state.user = null;
         state.error = null;
+      })
+      .addCase(fetchUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.isAuthenticated = true;
+        state.error = null;
+      })
+      .addCase(fetchUser.rejected, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+        state.error = action.payload as string;
       });
   },
 });
