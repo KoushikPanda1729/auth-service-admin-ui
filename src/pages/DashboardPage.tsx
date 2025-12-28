@@ -3,7 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
 
 export const DashboardPage = () => {
-  const { user } = useAuth();
+  const { userId } = useAuth();
 
   return (
     <DashboardLayout>
@@ -13,10 +13,7 @@ export const DashboardPage = () => {
           <p className="text-gray-600 mb-2">You are successfully logged in!</p>
           <div className="mt-6 bg-gray-50 rounded-lg p-4 inline-block">
             <p className="text-sm text-gray-700">
-              <span className="font-semibold">Email:</span> {user?.email}
-            </p>
-            <p className="text-sm text-gray-700 mt-2">
-              <span className="font-semibold">Role:</span> {user?.role}
+              <span className="font-semibold">User ID:</span> {userId}
             </p>
           </div>
         </div>

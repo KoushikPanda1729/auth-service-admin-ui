@@ -27,7 +27,7 @@ const LoginForm = () => {
     }
 
     setErrors({});
-    await handleLogin({ email, password, rememberMe });
+    await handleLogin({ email, password });
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {

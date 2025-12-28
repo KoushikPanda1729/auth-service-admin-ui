@@ -3,11 +3,12 @@ import type { AxiosInstance, AxiosError, InternalAxiosRequestConfig, AxiosRespon
 import { getToken, removeToken } from "../storage/localStorage";
 import { notification } from "../notification/notification";
 
-const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:5501"}/api`;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5501";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },

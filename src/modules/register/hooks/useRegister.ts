@@ -13,9 +13,9 @@ export const useRegister = () => {
   const handleRegister = async (userData: RegisterRequest) => {
     try {
       await dispatch(register(userData)).unwrap();
-      notification.success("Registration successful! Redirecting to login...");
+      notification.success("Registration successful! Redirecting to dashboard...");
       setTimeout(() => {
-        navigate("/login");
+        navigate("/dashboard");
       }, 1000);
     } catch (err) {
       const error = err as { message?: string };

@@ -8,7 +8,7 @@ export const useLogin = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { user, isAuthenticated, loading, error } = useAppSelector((state) => state.login);
+  const { userId, isAuthenticated, loading, error } = useAppSelector((state) => state.login);
 
   const handleLogin = async (credentials: LoginRequest) => {
     try {
@@ -37,7 +37,7 @@ export const useLogin = () => {
   };
 
   return {
-    user,
+    userId,
     isAuthenticated,
     loading,
     error,

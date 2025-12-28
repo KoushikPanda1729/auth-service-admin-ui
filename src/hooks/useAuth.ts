@@ -10,7 +10,7 @@ export const useAuth = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { user, isAuthenticated, loading, error, token } = useAppSelector((state) => state.login);
+  const { userId, isAuthenticated, loading, error } = useAppSelector((state) => state.login);
 
   const login = useCallback(
     async (credentials: LoginRequest) => {
@@ -28,8 +28,7 @@ export const useAuth = () => {
   }, [dispatch, navigate]);
 
   return {
-    user,
-    token,
+    userId,
     isAuthenticated,
     loading,
     error,

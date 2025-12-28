@@ -73,7 +73,7 @@ describe("useRegister Hook", () => {
 
     await waitFor(
       () => {
-        expect(mockNavigate).toHaveBeenCalledWith("/login");
+        expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
       },
       { timeout: 2000 }
     );
