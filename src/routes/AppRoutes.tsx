@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { LoginPage, RegisterPage, DashboardPage, NotFoundPage } from "../pages";
+import { LoginPage, RegisterPage, DashboardPage, NotFoundPage, UsersPage } from "../pages";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { AdminRoute } from "./AdminRoute";
 import { PublicRoute } from "./PublicRoute";
 import { ROUTES } from "./paths";
 
@@ -30,6 +31,14 @@ export const AppRoutes = () => {
           <ProtectedRoute>
             <DashboardPage />
           </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.USERS}
+        element={
+          <AdminRoute>
+            <UsersPage />
+          </AdminRoute>
         }
       />
       <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
