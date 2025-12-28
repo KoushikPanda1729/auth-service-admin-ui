@@ -16,5 +16,5 @@ export interface User {
 }
 
 export interface RefreshTokenResponse {
-  token: string;
+  id: number;
 }

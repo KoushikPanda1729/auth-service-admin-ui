@@ -11,10 +11,8 @@ export const loginApi = {
     await axiosInstance.post("/auth/logout");
   },
 
-  refreshToken: async (oldToken: string): Promise<RefreshTokenResponse> => {
-    const response = await axiosInstance.post<RefreshTokenResponse>("/auth/refresh", {
-      token: oldToken,
-    });
+  refreshToken: async (): Promise<RefreshTokenResponse> => {
+    const response = await axiosInstance.post<RefreshTokenResponse>("/auth/refresh");
     return response.data;
   },
 
