@@ -7,6 +7,7 @@ interface LoginState {
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
+  authChecked: boolean;
 }
 
 const initialState: LoginState = {
@@ -14,6 +15,7 @@ const initialState: LoginState = {
   isAuthenticated: false,
   loading: false,
   error: null,
+  authChecked: false,
 };
 
 export const login = createAsyncThunk<LoginResponse, LoginRequest>(
@@ -68,6 +70,7 @@ const loginSlice = createSlice({
       .addCase(login.fulfilled, (state) => {
         state.loading = false;
         state.isAuthenticated = true;
+        state.authChecked = true;
         state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
@@ -97,12 +100,14 @@ const loginSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.isAuthenticated = true;
+        state.authChecked = true;
         state.error = null;
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
         state.isAuthenticated = false;
         state.user = null;
+        state.authChecked = true;
         state.error = action.payload as string;
       });
   },

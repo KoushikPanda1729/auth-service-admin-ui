@@ -34,12 +34,15 @@ axiosInstance.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response) {
       const status = error.response.status;
+      const requestUrl = error.config?.url || "";
 
       switch (status) {
         case 401:
-          removeToken();
-          notification.error("Session expired. Please login again.");
-          window.location.href = "/login";
+          if (!requestUrl.includes("/auth/self")) {
+            removeToken();
+            notification.error("Session expired. Please login again.");
+            window.location.href = "/login";
+          }
           break;
         case 403:
           notification.error("You do not have permission to perform this action.");
