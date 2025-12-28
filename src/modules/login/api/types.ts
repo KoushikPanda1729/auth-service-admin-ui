@@ -18,3 +18,7 @@ export interface User {
 export interface RefreshTokenResponse {
   id: number;
 }
+
+export interface LogoutResponse {
+  message: string;
+}

@@ -1,5 +1,11 @@
 import axiosInstance from "../../../services/api/axios.config";
-import type { LoginRequest, LoginResponse, RefreshTokenResponse, User } from "./types";
+import type {
+  LoginRequest,
+  LoginResponse,
+  RefreshTokenResponse,
+  LogoutResponse,
+  User,
+} from "./types";
 
 export const loginApi = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
@@ -7,8 +13,9 @@ export const loginApi = {
     return response.data;
   },
 
-  logout: async (): Promise<void> => {
-    await axiosInstance.post("/auth/logout");
+  logout: async (): Promise<LogoutResponse> => {
+    const response = await axiosInstance.post<LogoutResponse>("/auth/logout");
+    return response.data;
   },
 
   refreshToken: async (): Promise<RefreshTokenResponse> => {
