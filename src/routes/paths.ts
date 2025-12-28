@@ -4,6 +4,7 @@ export const ROUTES = {
   REGISTER: "/register",
   DASHBOARD: "/dashboard",
   USERS: "/users",
+  TENANTS: "/tenants",
   NOT_FOUND: "*",
 } as const;
 

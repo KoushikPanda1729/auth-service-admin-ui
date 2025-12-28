@@ -1,5 +1,7 @@
-import { Modal, Form, Input, InputNumber } from "antd";
+import { useEffect, useState } from "react";
+import { Modal, Form, Input, Select, Button, Divider } from "antd";
 import { useUsers } from "../hooks/useUsers";
+import { useTenants } from "../../tenants/hooks/useTenants";
 import type { CreateManagerRequest } from "../api/types";
 
 interface CreateManagerModalProps {
@@ -10,6 +12,36 @@ interface CreateManagerModalProps {
 export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps) => {
   const [form] = Form.useForm();
   const { handleCreateManager, loading } = useUsers();
+  const { tenants, loadTenants, loading: tenantsLoading, total } = useTenants();
+  const [allTenants, setAllTenants] = useState<typeof tenants>([]);
+  const [tenantPage, setTenantPage] = useState(1);
+  const pageSize = 100;
+
+  useEffect(() => {
+    if (visible) {
+      setTenantPage(1);
+      setAllTenants([]);
+      loadTenants(1, pageSize);
+    }
+  }, [visible]);
+
+  useEffect(() => {
+    if (tenants.length > 0) {
+      setAllTenants((prev) => {
+        const existingIds = new Set(prev.map((t) => t.id));
+        const newTenants = tenants.filter((t) => !existingIds.has(t.id));
+        return [...prev, ...newTenants];
+      });
+    }
+  }, [tenants]);
+
+  const loadMoreTenants = () => {
+    const nextPage = tenantPage + 1;
+    setTenantPage(nextPage);
+    loadTenants(nextPage, pageSize);
+  };
+
+  const hasMoreTenants = allTenants.length < total;
 
   const handleSubmit = async () => {
     try {
@@ -86,14 +118,43 @@ export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps
         </Form.Item>
 
         <Form.Item
-          label="Tenant ID"
+          label="Tenant"
           name="tenantId"
-          rules={[
-            { required: true, message: "Please enter tenant ID" },
-            { type: "number", message: "Please enter a valid number" },
-          ]}
+          rules={[{ required: true, message: "Please select a tenant" }]}
         >
-          <InputNumber placeholder="Enter tenant ID" style={{ width: "100%" }} min={1} />
+          <Select
+            placeholder="Select a tenant"
+            loading={tenantsLoading}
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            options={allTenants.map((tenant) => ({
+              value: tenant.id,
+              label: `${tenant.name} - ${tenant.address}`,
+            }))}
+            dropdownRender={(menu) => (
+              <>
+                {menu}
+                {hasMoreTenants && (
+                  <>
+                    <Divider style={{ margin: "8px 0" }} />
+                    <div style={{ padding: "8px", textAlign: "center" }}>
+                      <Button
+                        type="link"
+                        onClick={loadMoreTenants}
+                        loading={tenantsLoading}
+                        style={{ width: "100%" }}
+                      >
+                        Load More Tenants
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          />
         </Form.Item>
       </Form>
     </Modal>
