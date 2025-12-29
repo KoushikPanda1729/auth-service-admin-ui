@@ -66,6 +66,7 @@ jobs:
           images: ${{ secrets.DOCKER_USERNAME }}/admin-ui
           tags: |
             type=raw,value=latest
+            type=raw,value=${{ github.run_number }}
             type=sha,prefix={{branch}}-
 
       - name: Build and push Docker image
