@@ -34,6 +34,11 @@ export interface GetUserByIdResponse {
   lastName: string;
   email: string;
   role: string;
+  tenant: {
+    id: number;
+    name: string;
+    address: string;
+  } | null;
 }
 
 export interface CreateManagerRequest {
@@ -62,6 +67,11 @@ export interface UpdateUserResponse {
   lastName: string;
   email: string;
   role: string;
+  tenant: {
+    id: number;
+    name: string;
+    address: string;
+  } | null;
 }
 
 export interface DeleteUserResponse {

@@ -6,6 +6,8 @@ import type {
   GetUsersResponse,
   CreateManagerRequest,
   UpdateUserRequest,
+  GetUserByIdResponse,
+  UpdateUserResponse,
 } from "../api/types";
 
 interface UsersState {
@@ -45,7 +47,7 @@ export const fetchUsers = createAsyncThunk<GetUsersResponse, GetUsersParams>(
   }
 );
 
-export const fetchUserById = createAsyncThunk<User, number>(
+export const fetchUserById = createAsyncThunk<GetUserByIdResponse, number>(
   "users/fetchById",
   async (userId, { rejectWithValue }) => {
     try {
@@ -71,18 +73,18 @@ export const createManager = createAsyncThunk<{ id: number }, CreateManagerReque
   }
 );
 
-export const updateUser = createAsyncThunk<User, { userId: number; data: UpdateUserRequest }>(
-  "users/update",
-  async ({ userId, data }, { rejectWithValue }) => {
-    try {
-      const user = await usersApi.update(userId, data);
-      return user;
-    } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || "Failed to update user");
-    }
+export const updateUser = createAsyncThunk<
+  UpdateUserResponse,
+  { userId: number; data: UpdateUserRequest }
+>("users/update", async ({ userId, data }, { rejectWithValue }) => {
+  try {
+    const user = await usersApi.update(userId, data);
+    return user;
+  } catch (error) {
+    const err = error as { response?: { data?: { message?: string } } };
+    return rejectWithValue(err.response?.data?.message || "Failed to update user");
   }
-);
+});
 
 export const deleteUser = createAsyncThunk<number, number>(
   "users/delete",
