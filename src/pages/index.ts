@@ -7,6 +7,7 @@ export { NotFoundPage } from "./NotFoundPage";
 export { MenuPage } from "./MenuPage";
 export { CreateProductPage } from "./CreateProductPage";
 export { ProductDetailPage } from "./ProductDetailPage";
+export { CategoriesPage } from "./CategoriesPage";
 export { ToppingsPage } from "./ToppingsPage";
 export { CreateToppingPage } from "./CreateToppingPage";
 export { ToppingDetailPage } from "./ToppingDetailPage";

@@ -18,6 +18,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     [ROUTES.DASHBOARD]: "Dashboard",
     [ROUTES.MENU]: "Products",
     [ROUTES.PRODUCTS]: "Products",
+    [ROUTES.CATEGORIES]: "Categories",
     [ROUTES.TOPPINGS]: "Toppings",
     [ROUTES.ORDERS]: "Orders",
     [ROUTES.SALES]: "Sales",

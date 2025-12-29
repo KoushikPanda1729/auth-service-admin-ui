@@ -11,6 +11,7 @@ import {
   UserOutlined,
   TeamOutlined,
   AppstoreOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
 import { ROUTES } from "../../routes/paths";
 
@@ -25,19 +26,24 @@ export const Sidebar = () => {
       label: "Home",
     },
     {
+      key: ROUTES.ORDERS,
+      icon: <ShoppingCartOutlined />,
+      label: "Orders",
+    },
+    {
       key: ROUTES.MENU,
       icon: <ShoppingOutlined />,
       label: "Products",
     },
     {
+      key: ROUTES.CATEGORIES,
+      icon: <UnorderedListOutlined />,
+      label: "Categories",
+    },
+    {
       key: ROUTES.TOPPINGS,
       icon: <AppstoreOutlined />,
       label: "Toppings",
-    },
-    {
-      key: ROUTES.ORDERS,
-      icon: <ShoppingCartOutlined />,
-      label: "Orders",
     },
     {
       key: ROUTES.SALES,

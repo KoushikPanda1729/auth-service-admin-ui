@@ -9,6 +9,7 @@ import {
   MenuPage,
   CreateProductPage,
   ProductDetailPage,
+  CategoriesPage,
   ToppingsPage,
   CreateToppingPage,
   ToppingDetailPage,
@@ -73,6 +74,14 @@ export const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <ProductDetailPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.CATEGORIES}
+        element={
+          <ProtectedRoute>
+            <CategoriesPage />
           </ProtectedRoute>
         }
       />
