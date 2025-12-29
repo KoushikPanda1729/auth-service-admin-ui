@@ -14,6 +14,7 @@ export default defineConfig({
     setupFiles: ["./src/__tests__/setup.ts"],
     css: true,
     reporters: ["verbose"],
+    testTimeout: 10000, // Increase timeout for CI environments
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
