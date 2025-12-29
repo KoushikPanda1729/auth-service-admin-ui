@@ -51,7 +51,11 @@ export const TenantsList = () => {
   }, []);
 
   useEffect(() => {
-    loadTenants();
+    const debounceTimeout = setTimeout(() => {
+      loadTenants();
+    }, 500);
+
+    return () => clearTimeout(debounceTimeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 

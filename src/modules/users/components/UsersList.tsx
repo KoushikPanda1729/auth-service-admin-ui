@@ -43,7 +43,11 @@ export const UsersList = () => {
   }, []);
 
   useEffect(() => {
-    loadUsers();
+    const debounceTimeout = setTimeout(() => {
+      loadUsers();
+    }, 500);
+
+    return () => clearTimeout(debounceTimeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, roleFilter]);
 
