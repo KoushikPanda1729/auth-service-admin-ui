@@ -134,6 +134,11 @@ export const UsersList = () => {
       key: "email",
     },
     {
+      title: "Restaurant",
+      key: "tenant",
+      render: (_, record) => <span>{record.tenant ? record.tenant.name : "-"}</span>,
+    },
+    {
       title: "Created at",
       key: "createdAt",
       render: () => "25 July 2022", // Placeholder - replace with actual data when available
