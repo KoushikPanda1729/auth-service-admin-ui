@@ -142,7 +142,9 @@ export const ToppingsPage = () => {
             showSizeChanger: false,
           }}
           onRow={(record) => ({
-            onClick: () => navigate(`/toppings/${record.id}`),
+            onClick: () => {
+              navigate(`/toppings/${record.id}`);
+            },
             style: { cursor: "pointer" },
           })}
         />

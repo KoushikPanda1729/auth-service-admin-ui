@@ -149,7 +149,9 @@ export const MenuPage = () => {
             showSizeChanger: false,
           }}
           onRow={(record) => ({
-            onClick: () => navigate(`/products/${record.id}`),
+            onClick: () => {
+              navigate(`/products/${record.id}`);
+            },
             style: { cursor: "pointer" },
           })}
         />

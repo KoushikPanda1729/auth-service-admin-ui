@@ -22,13 +22,17 @@ export const ViewTenantModal = ({ visible, tenantId, onClose }: ViewTenantModalP
     onClose();
   };
 
-  return (
-    <Modal title="Tenant Details" open={visible} onCancel={handleClose} footer={null} width={600}>
-      {loading ? (
+  const renderContent = () => {
+    if (loading) {
+      return (
         <div className="flex justify-center py-8">
           <Spin size="large" />
         </div>
-      ) : selectedTenant ? (
+      );
+    }
+
+    if (selectedTenant) {
+      return (
         <Descriptions bordered column={1}>
           <Descriptions.Item label="ID">{selectedTenant.id}</Descriptions.Item>
           <Descriptions.Item label="Name">{selectedTenant.name}</Descriptions.Item>
@@ -40,7 +44,15 @@ export const ViewTenantModal = ({ visible, tenantId, onClose }: ViewTenantModalP
             {new Date(selectedTenant.updatedAt).toLocaleString()}
           </Descriptions.Item>
         </Descriptions>
-      ) : null}
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <Modal title="Tenant Details" open={visible} onCancel={handleClose} footer={null} width={600}>
+      {renderContent()}
     </Modal>
   );
 };

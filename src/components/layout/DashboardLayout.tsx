@@ -41,8 +41,26 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     [ROUTES.HELP]: "Help",
   };
 
+  const getDetailBreadcrumb = (pathSnippets: string[]) => {
+    const [section, detail] = pathSnippets;
+
+    if (section === "orders" && detail) {
+      return <span>Order #{detail}</span>;
+    }
+    if (section === "products" && detail && detail !== "create") {
+      return <span>Product #{detail}</span>;
+    }
+    if (section === "toppings" && detail && detail !== "create") {
+      return <span>Topping #{detail}</span>;
+    }
+    if ((section === "products" || section === "toppings") && detail === "create") {
+      return <span>Create</span>;
+    }
+    return <span>{detail}</span>;
+  };
+
   const getBreadcrumbItems = () => {
-    const pathSnippets = location.pathname.split("/").filter((i) => i);
+    const pathSnippets = location.pathname.split("/").filter(Boolean);
 
     const breadcrumbItems = [
       {
@@ -54,55 +72,24 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       },
     ];
 
-    if (location.pathname !== ROUTES.DASHBOARD && pathSnippets.length > 0) {
-      const firstPath = `/${pathSnippets[0]}`;
+    if (location.pathname === ROUTES.DASHBOARD || pathSnippets.length === 0) {
+      return breadcrumbItems;
+    }
 
-      // Add the main section (e.g., Orders, Users, etc.)
-      if (pathSnippets.length === 1) {
-        breadcrumbItems.push({
-          title: <span>{routeNameMap[firstPath] || pathSnippets[0]}</span>,
-        });
-      } else {
-        // For nested routes, add parent as a link
-        const parentPath = firstPath === "/menu" ? ROUTES.MENU : firstPath;
-        breadcrumbItems.push({
-          title: <Link to={parentPath}>{routeNameMap[firstPath] || pathSnippets[0]}</Link>,
-        });
+    const firstPath = `/${pathSnippets[0]}`;
 
-        // Add the detail page (e.g., Order #123, Create)
-        if (pathSnippets[0] === "orders" && pathSnippets[1]) {
-          breadcrumbItems.push({
-            title: <span>Order #{pathSnippets[1]}</span>,
-          });
-        } else if (
-          pathSnippets[0] === "products" &&
-          pathSnippets[1] &&
-          pathSnippets[1] !== "create"
-        ) {
-          breadcrumbItems.push({
-            title: <span>Product #{pathSnippets[1]}</span>,
-          });
-        } else if (
-          pathSnippets[0] === "toppings" &&
-          pathSnippets[1] &&
-          pathSnippets[1] !== "create"
-        ) {
-          breadcrumbItems.push({
-            title: <span>Topping #{pathSnippets[1]}</span>,
-          });
-        } else if (
-          (pathSnippets[0] === "products" || pathSnippets[0] === "toppings") &&
-          pathSnippets[1] === "create"
-        ) {
-          breadcrumbItems.push({
-            title: <span>Create</span>,
-          });
-        } else {
-          breadcrumbItems.push({
-            title: <span>{pathSnippets[1]}</span>,
-          });
-        }
-      }
+    if (pathSnippets.length === 1) {
+      breadcrumbItems.push({
+        title: <span>{routeNameMap[firstPath] || pathSnippets[0]}</span>,
+      });
+    } else {
+      const parentPath = firstPath === "/menu" ? ROUTES.MENU : firstPath;
+      breadcrumbItems.push({
+        title: <Link to={parentPath}>{routeNameMap[firstPath] || pathSnippets[0]}</Link>,
+      });
+      breadcrumbItems.push({
+        title: getDetailBreadcrumb(pathSnippets),
+      });
     }
 
     return breadcrumbItems;
@@ -136,13 +123,17 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       key: "settings",
       icon: <SettingOutlined />,
       label: "Settings",
-      onClick: () => navigate(ROUTES.SETTINGS),
+      onClick: () => {
+        navigate(ROUTES.SETTINGS);
+      },
     },
     {
       key: "logout",
       icon: <LogoutOutlined />,
       label: "Logout",
-      onClick: handleLogout,
+      onClick: () => {
+        void handleLogout();
+      },
       danger: true,
     },
   ];

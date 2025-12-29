@@ -24,7 +24,7 @@ export function renderWithProviders(
     ...renderOptions
   }: ExtendedRenderOptions = {}
 ) {
-  function Wrapper({ children }: { children: React.ReactNode }) {
+  function Wrapper({ children }: { readonly children: React.ReactNode }) {
     return (
       <Provider store={store}>
         <BrowserRouter>

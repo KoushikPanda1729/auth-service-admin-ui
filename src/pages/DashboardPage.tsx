@@ -196,7 +196,7 @@ export const DashboardPage = () => {
               <Segmented
                 options={["Daily", "Weekly", "Monthly", "All"]}
                 value={timeFilter}
-                onChange={(value) => setTimeFilter(value as string)}
+                onChange={setTimeFilter}
                 style={{ fontWeight: 500 }}
               />
             }

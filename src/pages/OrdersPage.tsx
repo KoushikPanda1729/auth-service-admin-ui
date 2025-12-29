@@ -129,7 +129,9 @@ export const OrdersPage = () => {
             showSizeChanger: false,
           }}
           onRow={(record) => ({
-            onClick: () => navigate(`/orders/${record.id}`),
+            onClick: () => {
+              navigate(`/orders/${record.id}`);
+            },
             style: { cursor: "pointer" },
           })}
         />

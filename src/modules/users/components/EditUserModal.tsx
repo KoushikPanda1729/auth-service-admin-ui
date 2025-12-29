@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Drawer,
   Form,
@@ -108,6 +108,18 @@ export const EditUserModal = ({ visible, userId, onClose }: EditUserModalProps) 
   };
 
   const hasMoreTenants = allTenants.length < total;
+
+  const renderTenantDropdown = useCallback(
+    (menu: React.ReactNode) => (
+      <TenantDropdownRender
+        menu={menu}
+        hasMoreTenants={hasMoreTenants}
+        loadMoreTenants={loadMoreTenants}
+        tenantsLoading={tenantsLoading}
+      />
+    ),
+    [hasMoreTenants, loadMoreTenants, tenantsLoading]
+  );
 
   const handleSubmit = async () => {
     try {
@@ -255,14 +267,7 @@ export const EditUserModal = ({ visible, userId, onClose }: EditUserModalProps) 
                   value: tenant.id,
                   label: `${tenant.name} - ${tenant.address}`,
                 }))}
-                dropdownRender={(menu) => (
-                  <TenantDropdownRender
-                    menu={menu}
-                    hasMoreTenants={hasMoreTenants}
-                    loadMoreTenants={loadMoreTenants}
-                    tenantsLoading={tenantsLoading}
-                  />
-                )}
+                dropdownRender={renderTenantDropdown}
               />
             </Form.Item>
           </>

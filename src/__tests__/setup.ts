@@ -25,7 +25,7 @@ afterEach(() => {
   cleanup();
 });
 
-Object.defineProperty(window, "matchMedia", {
+Object.defineProperty(globalThis, "matchMedia", {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({
     matches: false,
@@ -41,11 +41,16 @@ Object.defineProperty(window, "matchMedia", {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
+  disconnect() {
+    // Mock implementation
+  }
+  observe() {
+    // Mock implementation
+  }
   takeRecords() {
     return [];
   }
-  unobserve() {}
+  unobserve() {
+    // Mock implementation
+  }
 };

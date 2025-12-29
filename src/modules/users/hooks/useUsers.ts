@@ -38,7 +38,7 @@ export const useUsers = () => {
           page: pageNum,
           limit: pageLimit,
           search: searchQuery || undefined,
-          role: roleFilter !== "all" ? roleFilter : undefined,
+          role: roleFilter === "all" ? undefined : roleFilter,
         })
       ).unwrap();
     } catch (err) {
