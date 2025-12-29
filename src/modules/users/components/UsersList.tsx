@@ -202,7 +202,7 @@ export const UsersList = () => {
           pageSize: pageSize,
           total: total,
           onChange: handlePageChange,
-          showSizeChanger: false,
+          showTotal: (total, range) => `Showing ${range[0]}-${range[1]} of ${total} users`,
         }}
       />
 
