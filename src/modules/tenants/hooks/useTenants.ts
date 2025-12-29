@@ -8,6 +8,7 @@ import {
   clearError,
   setCurrentPage,
   setPageSize,
+  setSearchQuery,
   clearSelectedTenant,
 } from "../store/tenantsSlice";
 import type { CreateTenantRequest, UpdateTenantRequest } from "../api/types";
@@ -15,15 +16,20 @@ import { notification } from "../../../services/notification/notification";
 
 export const useTenants = () => {
   const dispatch = useAppDispatch();
-  const { tenants, selectedTenant, loading, error, currentPage, pageSize, total } = useAppSelector(
-    (state) => state.tenants
-  );
+  const { tenants, selectedTenant, loading, error, currentPage, pageSize, total, searchQuery } =
+    useAppSelector((state) => state.tenants);
 
   const loadTenants = async (page?: number, limit?: number) => {
     try {
       const pageNum = page || currentPage;
       const pageLimit = limit || pageSize;
-      await dispatch(fetchTenants({ page: pageNum, limit: pageLimit })).unwrap();
+      await dispatch(
+        fetchTenants({
+          page: pageNum,
+          limit: pageLimit,
+          search: searchQuery || undefined,
+        })
+      ).unwrap();
     } catch (err) {
       const error = err as { message?: string };
       notification.error(error.message || "Failed to load tenants");
@@ -89,6 +95,10 @@ export const useTenants = () => {
     loadTenants(1, size);
   };
 
+  const handleSearchChange = (search: string) => {
+    dispatch(setSearchQuery(search));
+  };
+
   const clearTenantsError = () => {
     dispatch(clearError());
   };
@@ -105,6 +115,7 @@ export const useTenants = () => {
     currentPage,
     pageSize,
     total,
+    searchQuery,
     loadTenants,
     loadTenantById,
     handleCreateTenant,
@@ -112,6 +123,7 @@ export const useTenants = () => {
     handleDeleteTenant,
     handlePageChange,
     handlePageSizeChange,
+    handleSearchChange,
     clearTenantsError,
     clearTenant,
   };

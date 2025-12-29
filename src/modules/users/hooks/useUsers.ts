@@ -8,6 +8,8 @@ import {
   clearError,
   setCurrentPage,
   setPageSize,
+  setSearchQuery,
+  setRoleFilter,
   clearSelectedUser,
 } from "../store/usersSlice";
 import type { CreateManagerRequest, UpdateUserRequest } from "../api/types";
@@ -15,15 +17,30 @@ import { notification } from "../../../services/notification/notification";
 
 export const useUsers = () => {
   const dispatch = useAppDispatch();
-  const { users, selectedUser, loading, error, currentPage, pageSize, total } = useAppSelector(
-    (state) => state.users
-  );
+  const {
+    users,
+    selectedUser,
+    loading,
+    error,
+    currentPage,
+    pageSize,
+    total,
+    searchQuery,
+    roleFilter,
+  } = useAppSelector((state) => state.users);
 
   const loadUsers = async (page?: number, limit?: number) => {
     try {
       const pageNum = page || currentPage;
       const pageLimit = limit || pageSize;
-      await dispatch(fetchUsers({ page: pageNum, limit: pageLimit })).unwrap();
+      await dispatch(
+        fetchUsers({
+          page: pageNum,
+          limit: pageLimit,
+          search: searchQuery || undefined,
+          role: roleFilter !== "all" ? roleFilter : undefined,
+        })
+      ).unwrap();
     } catch (err) {
       const error = err as { message?: string };
       notification.error(error.message || "Failed to load users");
@@ -89,6 +106,14 @@ export const useUsers = () => {
     loadUsers(1, size);
   };
 
+  const handleSearchChange = (search: string) => {
+    dispatch(setSearchQuery(search));
+  };
+
+  const handleRoleFilterChange = (role: string) => {
+    dispatch(setRoleFilter(role));
+  };
+
   const clearUsersError = () => {
     dispatch(clearError());
   };
@@ -105,6 +130,8 @@ export const useUsers = () => {
     currentPage,
     pageSize,
     total,
+    searchQuery,
+    roleFilter,
     loadUsers,
     loadUserById,
     handleCreateManager,
@@ -112,6 +139,8 @@ export const useUsers = () => {
     handleDeleteUser,
     handlePageChange,
     handlePageSizeChange,
+    handleSearchChange,
+    handleRoleFilterChange,
     clearUsersError,
     clearUser,
   };

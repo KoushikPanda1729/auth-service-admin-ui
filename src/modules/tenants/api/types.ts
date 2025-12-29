@@ -9,6 +9,7 @@ export interface Tenant {
 export interface GetTenantsParams {
   page: number;
   limit: number;
+  search?: string;
 }
 
 export interface GetTenantsResponse {

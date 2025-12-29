@@ -16,6 +16,7 @@ export const tenantsApi = {
       params: {
         page: params.page,
         limit: params.limit,
+        ...(params.search && { search: params.search }),
       },
     });
     return response.data;

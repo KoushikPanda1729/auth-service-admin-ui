@@ -16,6 +16,8 @@ interface UsersState {
   currentPage: number;
   pageSize: number;
   total: number;
+  searchQuery: string;
+  roleFilter: string;
 }
 
 const initialState: UsersState = {
@@ -26,6 +28,8 @@ const initialState: UsersState = {
   currentPage: 1,
   pageSize: 10,
   total: 0,
+  searchQuery: "",
+  roleFilter: "all",
 };
 
 export const fetchUsers = createAsyncThunk<GetUsersResponse, GetUsersParams>(
@@ -106,6 +110,14 @@ const usersSlice = createSlice({
     setPageSize: (state, action) => {
       state.pageSize = action.payload;
     },
+    setSearchQuery: (state, action) => {
+      state.searchQuery = action.payload;
+      state.currentPage = 1; // Reset to first page when searching
+    },
+    setRoleFilter: (state, action) => {
+      state.roleFilter = action.payload;
+      state.currentPage = 1; // Reset to first page when filtering
+    },
     clearSelectedUser: (state) => {
       state.selectedUser = null;
     },
@@ -183,5 +195,12 @@ const usersSlice = createSlice({
   },
 });
 
-export const { clearError, setCurrentPage, setPageSize, clearSelectedUser } = usersSlice.actions;
+export const {
+  clearError,
+  setCurrentPage,
+  setPageSize,
+  setSearchQuery,
+  setRoleFilter,
+  clearSelectedUser,
+} = usersSlice.actions;
 export default usersSlice.reducer;

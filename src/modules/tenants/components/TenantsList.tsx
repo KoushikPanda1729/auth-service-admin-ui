@@ -27,16 +27,17 @@ export const TenantsList = () => {
     currentPage,
     pageSize,
     total,
+    searchQuery,
     loadTenants,
     handleDeleteTenant,
     handlePageChange,
+    handleSearchChange,
   } = useTenants();
 
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [viewModalVisible, setViewModalVisible] = useState(false);
   const [selectedTenantId, setSelectedTenantId] = useState<number | null>(null);
-  const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const isAdmin = user?.role === "admin";
@@ -48,6 +49,11 @@ export const TenantsList = () => {
     loadTenants();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    loadTenants();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
   const handleView = (tenantId: number) => {
     setSelectedTenantId(tenantId);
@@ -156,8 +162,8 @@ export const TenantsList = () => {
             placeholder="Search..."
             prefix={<SearchOutlined />}
             style={{ width: 200 }}
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
           />
           <Select value={statusFilter} onChange={setStatusFilter} style={{ width: 120 }}>
             <Option value="all">Status</Option>

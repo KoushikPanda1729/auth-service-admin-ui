@@ -23,22 +23,29 @@ export const UsersList = () => {
     currentPage,
     pageSize,
     total,
+    searchQuery,
+    roleFilter,
     loadUsers,
     handleDeleteUser,
     handlePageChange,
+    handleSearchChange,
+    handleRoleFilterChange,
   } = useUsers();
 
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [roleFilter, setRoleFilter] = useState<string>("all");
-  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     loadUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    loadUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, roleFilter]);
 
   const handleEdit = (userId: number) => {
     setSelectedUserId(userId);
@@ -150,8 +157,8 @@ export const UsersList = () => {
             placeholder="Search..."
             prefix={<SearchOutlined />}
             style={{ width: 200 }}
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
           />
           <Select value={statusFilter} onChange={setStatusFilter} style={{ width: 120 }}>
             <Option value="all">Status</Option>
@@ -159,7 +166,7 @@ export const UsersList = () => {
             <Option value="banned">Banned</Option>
             <Option value="valid">Valid</Option>
           </Select>
-          <Select value={roleFilter} onChange={setRoleFilter} style={{ width: 120 }}>
+          <Select value={roleFilter} onChange={handleRoleFilterChange} style={{ width: 120 }}>
             <Option value="all">Role</Option>
             <Option value="admin">Admin</Option>
             <Option value="manager">Manager</Option>

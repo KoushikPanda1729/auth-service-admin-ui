@@ -16,6 +16,8 @@ export const usersApi = {
       params: {
         page: params.page,
         limit: params.limit,
+        ...(params.search && { search: params.search }),
+        ...(params.role && params.role !== "all" && { role: params.role }),
       },
     });
     return response.data;

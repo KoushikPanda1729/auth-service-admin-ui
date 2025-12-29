@@ -16,6 +16,7 @@ interface TenantsState {
   currentPage: number;
   pageSize: number;
   total: number;
+  searchQuery: string;
 }
 
 const initialState: TenantsState = {
@@ -26,6 +27,7 @@ const initialState: TenantsState = {
   currentPage: 1,
   pageSize: 10,
   total: 0,
+  searchQuery: "",
 };
 
 export const fetchTenants = createAsyncThunk<GetTenantsResponse, GetTenantsParams>(
@@ -106,6 +108,10 @@ const tenantsSlice = createSlice({
     setPageSize: (state, action) => {
       state.pageSize = action.payload;
     },
+    setSearchQuery: (state, action) => {
+      state.searchQuery = action.payload;
+      state.currentPage = 1; // Reset to first page when searching
+    },
     clearSelectedTenant: (state) => {
       state.selectedTenant = null;
     },
@@ -183,6 +189,6 @@ const tenantsSlice = createSlice({
   },
 });
 
-export const { clearError, setCurrentPage, setPageSize, clearSelectedTenant } =
+export const { clearError, setCurrentPage, setPageSize, setSearchQuery, clearSelectedTenant } =
   tenantsSlice.actions;
 export default tenantsSlice.reducer;
