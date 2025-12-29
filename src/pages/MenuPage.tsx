@@ -149,6 +149,10 @@ export const MenuPage = () => {
             pageSize: 10,
             showSizeChanger: false,
           }}
+          onRow={(record) => ({
+            onClick: () => navigate(`/products/${record.id}`),
+            style: { cursor: "pointer" },
+          })}
         />
       </Card>
     </DashboardLayout>

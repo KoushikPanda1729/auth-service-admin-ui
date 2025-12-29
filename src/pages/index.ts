@@ -6,6 +6,7 @@ export { TenantsPage } from "./TenantsPage";
 export { NotFoundPage } from "./NotFoundPage";
 export { MenuPage } from "./MenuPage";
 export { CreateProductPage } from "./CreateProductPage";
+export { ProductDetailPage } from "./ProductDetailPage";
 export { ToppingsPage } from "./ToppingsPage";
 export { CreateToppingPage } from "./CreateToppingPage";
 export { ToppingDetailPage } from "./ToppingDetailPage";

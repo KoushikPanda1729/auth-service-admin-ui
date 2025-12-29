@@ -8,6 +8,7 @@ import {
   TenantsPage,
   MenuPage,
   CreateProductPage,
+  ProductDetailPage,
   ToppingsPage,
   CreateToppingPage,
   ToppingDetailPage,
@@ -64,6 +65,14 @@ export const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <CreateProductPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PRODUCT_DETAIL}
+        element={
+          <ProtectedRoute>
+            <ProductDetailPage />
           </ProtectedRoute>
         }
       />

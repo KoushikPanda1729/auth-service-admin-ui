@@ -8,6 +8,7 @@ export const ROUTES = {
   MENU: "/menu",
   PRODUCTS: "/products",
   CREATE_PRODUCT: "/products/create",
+  PRODUCT_DETAIL: "/products/:productId",
   TOPPINGS: "/toppings",
   CREATE_TOPPING: "/toppings/create",
   TOPPING_DETAIL: "/toppings/:toppingId",

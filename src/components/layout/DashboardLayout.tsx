@@ -62,6 +62,14 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             title: <span>Order #{pathSnippets[1]}</span>,
           });
         } else if (
+          pathSnippets[0] === "products" &&
+          pathSnippets[1] &&
+          pathSnippets[1] !== "create"
+        ) {
+          breadcrumbItems.push({
+            title: <span>Product #{pathSnippets[1]}</span>,
+          });
+        } else if (
           pathSnippets[0] === "toppings" &&
           pathSnippets[1] &&
           pathSnippets[1] !== "create"
