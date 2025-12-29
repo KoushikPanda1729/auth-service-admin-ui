@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { ROUTES } from "./paths";
 
@@ -8,6 +8,7 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isAuthenticated, authChecked } = useAppSelector((state) => state.login);
+  const location = useLocation();
 
   if (!authChecked) {
     return (
@@ -21,7 +22,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to={ROUTES.LOGIN} replace />;
+    // Save the current location to redirect back after login
+    return <Navigate to={`${ROUTES.LOGIN}?redirect=${location.pathname}`} replace />;
   }
 
   return <>{children}</>;
