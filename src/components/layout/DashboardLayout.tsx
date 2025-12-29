@@ -39,11 +39,31 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       },
     ];
 
-    if (location.pathname !== ROUTES.DASHBOARD) {
-      const currentPath = `/${pathSnippets[0]}`;
-      breadcrumbItems.push({
-        title: <span>{routeNameMap[currentPath] || pathSnippets[0]}</span>,
-      });
+    if (location.pathname !== ROUTES.DASHBOARD && pathSnippets.length > 0) {
+      const firstPath = `/${pathSnippets[0]}`;
+
+      // Add the main section (e.g., Orders, Users, etc.)
+      if (pathSnippets.length === 1) {
+        breadcrumbItems.push({
+          title: <span>{routeNameMap[firstPath] || pathSnippets[0]}</span>,
+        });
+      } else {
+        // For nested routes, add parent as a link
+        breadcrumbItems.push({
+          title: <Link to={firstPath}>{routeNameMap[firstPath] || pathSnippets[0]}</Link>,
+        });
+
+        // Add the detail page (e.g., Order #123)
+        if (pathSnippets[0] === "orders" && pathSnippets[1]) {
+          breadcrumbItems.push({
+            title: <span>Order #{pathSnippets[1]}</span>,
+          });
+        } else {
+          breadcrumbItems.push({
+            title: <span>{pathSnippets[1]}</span>,
+          });
+        }
+      }
     }
 
     return breadcrumbItems;

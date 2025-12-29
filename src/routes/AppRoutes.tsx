@@ -8,6 +8,7 @@ import {
   TenantsPage,
   MenuPage,
   OrdersPage,
+  OrderDetailPage,
   SalesPage,
   PromosPage,
   SettingsPage,
@@ -59,6 +60,14 @@ export const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <OrdersPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.ORDER_DETAIL}
+        element={
+          <ProtectedRoute>
+            <OrderDetailPage />
           </ProtectedRoute>
         }
       />
