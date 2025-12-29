@@ -10,6 +10,7 @@ import {
   QuestionCircleOutlined,
   UserOutlined,
   TeamOutlined,
+  AppstoreOutlined,
 } from "@ant-design/icons";
 import { ROUTES } from "../../routes/paths";
 
@@ -27,6 +28,11 @@ export const Sidebar = () => {
       key: ROUTES.MENU,
       icon: <ShoppingOutlined />,
       label: "Products",
+    },
+    {
+      key: ROUTES.TOPPINGS,
+      icon: <AppstoreOutlined />,
+      label: "Toppings",
     },
     {
       key: ROUTES.ORDERS,

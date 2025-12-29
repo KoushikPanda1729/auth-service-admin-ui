@@ -18,6 +18,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     [ROUTES.DASHBOARD]: "Dashboard",
     [ROUTES.MENU]: "Products",
     [ROUTES.PRODUCTS]: "Products",
+    [ROUTES.TOPPINGS]: "Toppings",
     [ROUTES.ORDERS]: "Orders",
     [ROUTES.SALES]: "Sales",
     [ROUTES.PROMOS]: "Promos",
@@ -60,7 +61,18 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           breadcrumbItems.push({
             title: <span>Order #{pathSnippets[1]}</span>,
           });
-        } else if (pathSnippets[0] === "products" && pathSnippets[1] === "create") {
+        } else if (
+          pathSnippets[0] === "toppings" &&
+          pathSnippets[1] &&
+          pathSnippets[1] !== "create"
+        ) {
+          breadcrumbItems.push({
+            title: <span>Topping #{pathSnippets[1]}</span>,
+          });
+        } else if (
+          (pathSnippets[0] === "products" || pathSnippets[0] === "toppings") &&
+          pathSnippets[1] === "create"
+        ) {
           breadcrumbItems.push({
             title: <span>Create</span>,
           });
