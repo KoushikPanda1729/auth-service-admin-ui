@@ -1,255 +1,203 @@
 import { useAuth } from "../hooks/useAuth";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
-import { Card, Row, Col, Typography, Tag, Button, Segmented } from "antd";
-import { ShoppingCartOutlined, RiseOutlined, ShoppingOutlined } from "@ant-design/icons";
+import { Card, Row, Col, Typography, Statistic, Tag, Segmented } from "antd";
+import { ShoppingCartOutlined, RiseOutlined, UserOutlined, GiftOutlined } from "@ant-design/icons";
 import { Line } from "@ant-design/plots";
+import { useState } from "react";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 export const DashboardPage = () => {
   const { user } = useAuth();
-
-  const statsData = [
-    {
-      title: "Total orders",
-      value: "28",
-      icon: <ShoppingCartOutlined style={{ fontSize: "24px", color: "#52c41a" }} />,
-      bgColor: "#f6ffed",
-    },
-    {
-      title: "Total sale",
-      value: "₹ 50 000",
-      icon: <RiseOutlined style={{ fontSize: "24px", color: "#1890ff" }} />,
-      bgColor: "#e6f7ff",
-    },
-    {
-      title: "Recent orders",
-      icon: <ShoppingOutlined style={{ fontSize: "24px", color: "#ff4d4f" }} />,
-      bgColor: "#fff1f0",
-    },
-  ];
+  const [timeFilter, setTimeFilter] = useState<string>("Weekly");
 
   const recentOrders = [
     {
+      id: "1",
       name: "Rakesh Kohali",
       address: "main street, bandra",
       amount: "₹ 1250",
       status: "Preparing",
-      statusColor: "orange",
+      statusColor: "#fff1f0",
+      statusTextColor: "#cf1322",
     },
     {
+      id: "2",
       name: "John Doe",
       address: "side street, bandra",
       amount: "₹ 900",
       status: "On the way",
-      statusColor: "blue",
+      statusColor: "#e6f7ff",
+      statusTextColor: "#0958d9",
     },
     {
+      id: "3",
       name: "Naman Kar",
       address: "down street, bandra",
       amount: "₹ 1900",
       status: "Delivered",
-      statusColor: "green",
+      statusColor: "#f6ffed",
+      statusTextColor: "#389e0d",
     },
     {
+      id: "4",
       name: "Naman Kar",
       address: "down street, bandra",
       amount: "₹ 1900",
       status: "Delivered",
-      statusColor: "green",
+      statusColor: "#f6ffed",
+      statusTextColor: "#389e0d",
     },
     {
+      id: "5",
       name: "Naman Kar",
       address: "down street, bandra",
       amount: "₹ 1900",
       status: "Delivered",
-      statusColor: "green",
+      statusColor: "#f6ffed",
+      statusTextColor: "#389e0d",
     },
   ];
 
-  const salesData = [
-    { date: "1 Jan", value: 10000 },
-    { date: "2 Jan", value: 6000 },
-    { date: "3 Jan", value: 18000 },
-    { date: "4 Jan", value: 24000 },
-    { date: "5 Jan", value: 20000 },
-    { date: "6 Jan", value: 28000 },
-  ];
+  const salesDataSets: Record<string, Array<{ date: string; value: number }>> = {
+    Daily: [
+      { date: "12 AM", value: 2000 },
+      { date: "4 AM", value: 1500 },
+      { date: "8 AM", value: 8000 },
+      { date: "12 PM", value: 15000 },
+      { date: "4 PM", value: 18000 },
+      { date: "8 PM", value: 22000 },
+      { date: "11 PM", value: 12000 },
+    ],
+    Weekly: [
+      { date: "Mon", value: 15000 },
+      { date: "Tue", value: 12000 },
+      { date: "Wed", value: 18000 },
+      { date: "Thu", value: 21000 },
+      { date: "Fri", value: 25000 },
+      { date: "Sat", value: 32000 },
+      { date: "Sun", value: 28000 },
+    ],
+    Monthly: [
+      { date: "Week 1", value: 65000 },
+      { date: "Week 2", value: 78000 },
+      { date: "Week 3", value: 82000 },
+      { date: "Week 4", value: 95000 },
+    ],
+    All: [
+      { date: "Jan", value: 180000 },
+      { date: "Feb", value: 165000 },
+      { date: "Mar", value: 195000 },
+      { date: "Apr", value: 210000 },
+      { date: "May", value: 225000 },
+      { date: "Jun", value: 240000 },
+    ],
+  };
+
+  const salesData = salesDataSets[timeFilter] || salesDataSets.Weekly;
 
   const chartConfig = {
     data: salesData,
     xField: "date",
     yField: "value",
     smooth: true,
-    color: "#ff6b6b",
+    color: "#ff4d4f",
+    height: 300,
     point: {
-      size: 0,
+      size: 5,
+      shape: "circle",
+      style: {
+        fill: "#ff4d4f",
+        stroke: "#fff",
+        lineWidth: 2,
+      },
     },
     lineStyle: {
-      lineWidth: 2,
+      lineWidth: 3,
     },
     yAxis: {
       label: {
-        formatter: (v: string) => `₹ ${parseInt(v) / 1000} 000`,
+        formatter: (v: string) => `₹${(parseInt(v) / 1000).toFixed(0)}k`,
+      },
+    },
+    xAxis: {
+      label: {
+        style: {
+          fill: "#666",
+        },
       },
     },
   };
 
   return (
     <DashboardLayout>
-      <div style={{ marginBottom: "24px" }}>
-        <Title level={3} style={{ marginBottom: "4px" }}>
-          Good morning
-        </Title>
-        <Title level={2} style={{ marginTop: 0 }}>
-          {user?.firstName || "Rakesh"} 😊
+      <div style={{ marginBottom: "32px" }}>
+        <Title level={2} style={{ margin: 0 }}>
+          Welcome back, {user?.firstName || "Admin"}! 👋
         </Title>
       </div>
 
-      <Row gutter={[16, 16]}>
-        <Col xs={24} md={8}>
-          <Card
-            bordered={false}
-            style={{
-              borderRadius: "12px",
-              background: statsData[0].bgColor,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <div
-                style={{
-                  background: "#fff",
-                  padding: "12px",
-                  borderRadius: "8px",
-                }}
-              >
-                {statsData[0].icon}
-              </div>
-              <div>
-                <Text type="secondary" style={{ display: "block" }}>
-                  {statsData[0].title}
-                </Text>
-                <Title level={2} style={{ margin: 0 }}>
-                  {statsData[0].value}
-                </Title>
-              </div>
-            </div>
+      {/* Stats Cards */}
+      <Row gutter={[24, 24]}>
+        <Col xs={24} sm={12} lg={6}>
+          <Card bordered={false} style={{ borderRadius: "12px" }}>
+            <Statistic
+              title="Total Orders"
+              value={156}
+              prefix={<ShoppingCartOutlined style={{ color: "#ff4d4f" }} />}
+              valueStyle={{ color: "#000", fontWeight: 600 }}
+            />
           </Card>
         </Col>
 
-        <Col xs={24} md={8}>
-          <Card
-            bordered={false}
-            style={{
-              borderRadius: "12px",
-              background: statsData[1].bgColor,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <div
-                style={{
-                  background: "#fff",
-                  padding: "12px",
-                  borderRadius: "8px",
-                }}
-              >
-                {statsData[1].icon}
-              </div>
-              <div>
-                <Text type="secondary" style={{ display: "block" }}>
-                  {statsData[1].title}
-                </Text>
-                <Title level={2} style={{ margin: 0 }}>
-                  {statsData[1].value}
-                </Title>
-              </div>
-            </div>
+        <Col xs={24} sm={12} lg={6}>
+          <Card bordered={false} style={{ borderRadius: "12px" }}>
+            <Statistic
+              title="Total Revenue"
+              value={50000}
+              prefix="₹"
+              suffix={<RiseOutlined style={{ color: "#52c41a", fontSize: "16px" }} />}
+              valueStyle={{ color: "#000", fontWeight: 600 }}
+            />
           </Card>
         </Col>
 
-        <Col xs={24} md={8}>
-          <Card
-            bordered={false}
-            style={{
-              borderRadius: "12px",
-              background: statsData[2].bgColor,
-              height: "100%",
-            }}
-          >
-            <div
-              style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}
-            >
-              <div
-                style={{
-                  background: "#fff",
-                  padding: "12px",
-                  borderRadius: "8px",
-                }}
-              >
-                {statsData[2].icon}
-              </div>
-              <Text strong style={{ fontSize: "16px" }}>
-                {statsData[2].title}
-              </Text>
-            </div>
-            {recentOrders.slice(0, 2).map((order, index) => (
-              <div
-                key={index}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "12px",
-                }}
-              >
-                <div>
-                  <Text strong style={{ display: "block" }}>
-                    {order.name}
-                  </Text>
-                  <Text type="secondary" style={{ fontSize: "12px" }}>
-                    {order.address}
-                  </Text>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <Text strong style={{ display: "block" }}>
-                    {order.amount}
-                  </Text>
-                  <Tag color={order.statusColor} style={{ margin: 0 }}>
-                    {order.status}
-                  </Tag>
-                </div>
-              </div>
-            ))}
+        <Col xs={24} sm={12} lg={6}>
+          <Card bordered={false} style={{ borderRadius: "12px" }}>
+            <Statistic
+              title="Total Customers"
+              value={89}
+              prefix={<UserOutlined style={{ color: "#1890ff" }} />}
+              valueStyle={{ color: "#000", fontWeight: 600 }}
+            />
+          </Card>
+        </Col>
+
+        <Col xs={24} sm={12} lg={6}>
+          <Card bordered={false} style={{ borderRadius: "12px" }}>
+            <Statistic
+              title="Avg Order Value"
+              value={1250}
+              prefix="₹"
+              valueStyle={{ color: "#000", fontWeight: 600 }}
+            />
           </Card>
         </Col>
       </Row>
 
-      <Row gutter={[16, 16]} style={{ marginTop: "16px" }}>
-        <Col xs={24} lg={14}>
+      {/* Charts & Recent Orders */}
+      <Row gutter={[24, 24]} style={{ marginTop: "24px" }}>
+        <Col xs={24} lg={16}>
           <Card
             bordered={false}
             style={{ borderRadius: "12px" }}
-            title={
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <div
-                  style={{
-                    background: "#e6f7ff",
-                    padding: "8px",
-                    borderRadius: "8px",
-                  }}
-                >
-                  <RiseOutlined style={{ fontSize: "20px", color: "#1890ff" }} />
-                </div>
-                <Text strong style={{ fontSize: "16px" }}>
-                  Sales
-                </Text>
-              </div>
-            }
+            title={<span style={{ fontSize: "18px", fontWeight: 600 }}>Sales Overview</span>}
             extra={
               <Segmented
-                options={["W", "M", "Y"]}
-                defaultValue="M"
-                style={{ background: "#f5f5f5" }}
+                options={["Daily", "Weekly", "Monthly", "All"]}
+                value={timeFilter}
+                onChange={(value) => setTimeFilter(value as string)}
+                style={{ fontWeight: 500 }}
               />
             }
           >
@@ -257,71 +205,82 @@ export const DashboardPage = () => {
           </Card>
         </Col>
 
-        <Col xs={24} lg={10}>
+        <Col xs={24} lg={8}>
           <Card
             bordered={false}
-            style={{ borderRadius: "12px", height: "100%" }}
+            style={{ borderRadius: "12px" }}
             title={
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <div
-                  style={{
-                    background: "#fff1f0",
-                    padding: "8px",
-                    borderRadius: "8px",
-                  }}
-                >
-                  <ShoppingOutlined style={{ fontSize: "20px", color: "#ff4d4f" }} />
-                </div>
-                <Text strong style={{ fontSize: "16px" }}>
-                  Recent orders
-                </Text>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <GiftOutlined style={{ fontSize: "20px", color: "#ff4d4f" }} />
+                <span style={{ fontSize: "18px", fontWeight: 600 }}>Recent orders</span>
               </div>
             }
           >
-            <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+            <div>
               {recentOrders.map((order, index) => (
                 <div
-                  key={index}
+                  key={order.id}
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "16px",
-                    paddingBottom: "16px",
-                    borderBottom: index < recentOrders.length - 1 ? "1px solid #f0f0f0" : "none",
+                    marginBottom: index < recentOrders.length - 1 ? "24px" : "16px",
                   }}
                 >
-                  <div>
-                    <Text strong style={{ display: "block" }}>
-                      {order.name}
-                    </Text>
-                    <Text type="secondary" style={{ fontSize: "12px" }}>
-                      {order.address}
-                    </Text>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <Text strong style={{ display: "block", marginBottom: "4px" }}>
-                      {order.amount}
-                    </Text>
-                    <Tag color={order.statusColor} style={{ margin: 0 }}>
-                      {order.status}
-                    </Tag>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 600, fontSize: "14px", marginBottom: "2px" }}>
+                        {order.name}
+                      </div>
+                      <div style={{ fontSize: "13px", color: "#666" }}>{order.address}</div>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        marginLeft: "16px",
+                      }}
+                    >
+                      <span style={{ fontWeight: 600, fontSize: "14px", whiteSpace: "nowrap" }}>
+                        {order.amount}
+                      </span>
+                      <Tag
+                        style={{
+                          backgroundColor: order.statusColor,
+                          color: order.statusTextColor,
+                          border: "none",
+                          borderRadius: "12px",
+                          padding: "2px 12px",
+                          fontSize: "12px",
+                          margin: 0,
+                        }}
+                      >
+                        {order.status}
+                      </Tag>
+                    </div>
                   </div>
                 </div>
               ))}
+              <a
+                href="/orders"
+                style={{
+                  color: "#000",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  textDecoration: "none",
+                  borderBottom: "2px solid #ff4d4f",
+                  paddingBottom: "2px",
+                  display: "inline-block",
+                }}
+              >
+                See all orders
+              </a>
             </div>
-            <Button
-              type="link"
-              style={{
-                padding: 0,
-                color: "#ff4d4f",
-                marginTop: "8px",
-                borderBottom: "2px solid #ff4d4f",
-                borderRadius: 0,
-              }}
-            >
-              See all orders
-            </Button>
           </Card>
         </Col>
       </Row>
