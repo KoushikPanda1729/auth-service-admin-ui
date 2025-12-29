@@ -4,7 +4,6 @@ import {
   HomeOutlined,
   ShoppingOutlined,
   ShoppingCartOutlined,
-  BarChartOutlined,
   TagOutlined,
   SettingOutlined,
   QuestionCircleOutlined,
@@ -26,11 +25,6 @@ export const Sidebar = () => {
       label: "Home",
     },
     {
-      key: ROUTES.ORDERS,
-      icon: <ShoppingCartOutlined />,
-      label: "Orders",
-    },
-    {
       key: ROUTES.MENU,
       icon: <ShoppingOutlined />,
       label: "Products",
@@ -46,10 +40,15 @@ export const Sidebar = () => {
       label: "Toppings",
     },
     {
-      key: ROUTES.SALES,
-      icon: <BarChartOutlined />,
-      label: "Sales",
+      key: ROUTES.ORDERS,
+      icon: <ShoppingCartOutlined />,
+      label: "Orders",
     },
+    // {
+    //   key: ROUTES.SALES,
+    //   icon: <BarChartOutlined />,
+    //   label: "Sales",
+    // },
     {
       key: ROUTES.PROMOS,
       icon: <TagOutlined />,
@@ -58,7 +57,7 @@ export const Sidebar = () => {
     {
       key: ROUTES.TENANTS,
       icon: <TeamOutlined />,
-      label: "Tenants",
+      label: "Restaurants",
     },
     {
       key: ROUTES.USERS,

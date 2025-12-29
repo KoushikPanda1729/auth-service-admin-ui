@@ -61,7 +61,7 @@ export const TenantsList = () => {
 
   const handleDelete = (tenantId: number, tenantName: string) => {
     Modal.confirm({
-      title: "Delete Tenant",
+      title: "Delete Restaurant",
       content: `Are you sure you want to delete ${tenantName}? This action cannot be undone.`,
       okText: "Delete",
       okType: "danger",
@@ -106,7 +106,7 @@ export const TenantsList = () => {
 
   const columns: ColumnsType<Tenant> = [
     {
-      title: "Tenant name",
+      title: "Restaurant name",
       key: "tenantName",
       render: (_, record) => (
         <Space>
@@ -149,7 +149,7 @@ export const TenantsList = () => {
     <Card
       bordered={false}
       style={{ borderRadius: "12px" }}
-      title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Tenants</span>}
+      title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Restaurants</span>}
       extra={
         <Space>
           <Input
@@ -171,7 +171,7 @@ export const TenantsList = () => {
               style={{ background: "#ff4d4f" }}
               onClick={() => setCreateModalVisible(true)}
             >
-              Create Tenant
+              Create Restaurant
             </Button>
           )}
         </Space>

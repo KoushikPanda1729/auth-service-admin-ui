@@ -34,7 +34,7 @@ export const CreateTenantModal = ({ visible, onClose }: CreateTenantModalProps) 
 
   return (
     <Drawer
-      title="Create Tenant"
+      title="Create Restaurant"
       placement="right"
       onClose={handleCancel}
       open={visible}
@@ -58,14 +58,14 @@ export const CreateTenantModal = ({ visible, onClose }: CreateTenantModalProps) 
         <Title level={5}>Basic Info</Title>
 
         <Form.Item
-          label="Tenant Name"
+          label="Restaurant Name"
           name="name"
           rules={[
-            { required: true, message: "Please enter tenant name" },
-            { min: 2, message: "Tenant name must be at least 2 characters" },
+            { required: true, message: "Please enter restaurant name" },
+            { min: 2, message: "Restaurant name must be at least 2 characters" },
           ]}
         >
-          <Input placeholder="Enter tenant name" />
+          <Input placeholder="Enter restaurant name" />
         </Form.Item>
 
         <Form.Item
@@ -76,7 +76,7 @@ export const CreateTenantModal = ({ visible, onClose }: CreateTenantModalProps) 
             { min: 5, message: "Address must be at least 5 characters" },
           ]}
         >
-          <Input.TextArea placeholder="Enter tenant address" rows={3} />
+          <Input.TextArea placeholder="Enter restaurant address" rows={3} />
         </Form.Item>
 
         <Divider />
