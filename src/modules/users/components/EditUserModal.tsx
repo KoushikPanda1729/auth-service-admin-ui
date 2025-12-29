@@ -17,6 +17,7 @@ import { SaveOutlined, InboxOutlined } from "@ant-design/icons";
 import { useUsers } from "../hooks/useUsers";
 import { useTenants } from "../../tenants/hooks/useTenants";
 import type { UpdateUserRequest } from "../api/types";
+import { TenantDropdownRender } from "./shared/TenantDropdownRender";
 
 const { Title } = Typography;
 
@@ -25,39 +26,6 @@ interface EditUserModalProps {
   userId: number | null;
   onClose: () => void;
 }
-
-interface TenantDropdownRenderProps {
-  menu: React.ReactNode;
-  hasMoreTenants: boolean;
-  loadMoreTenants: () => void;
-  tenantsLoading: boolean;
-}
-
-const TenantDropdownRender = ({
-  menu,
-  hasMoreTenants,
-  loadMoreTenants,
-  tenantsLoading,
-}: TenantDropdownRenderProps) => (
-  <>
-    {menu}
-    {hasMoreTenants && (
-      <>
-        <Divider style={{ margin: "8px 0" }} />
-        <div style={{ padding: "8px", textAlign: "center" }}>
-          <Button
-            type="link"
-            onClick={loadMoreTenants}
-            loading={tenantsLoading}
-            style={{ width: "100%" }}
-          >
-            Load More Restaurants
-          </Button>
-        </div>
-      </>
-    )}
-  </>
-);
 
 export const EditUserModal = ({ visible, userId, onClose }: EditUserModalProps) => {
   const [form] = Form.useForm();

@@ -54,3 +54,18 @@ Object.defineProperty(globalThis, "matchMedia", {
     // Mock implementation
   }
 };
+
+// Mock window.getComputedStyle for Ant Design components
+Object.defineProperty(globalThis, "getComputedStyle", {
+  value: () => ({
+    getPropertyValue: () => "",
+    width: "0px",
+    height: "0px",
+  }),
+});
+
+// Mock scrollTo for Ant Design
+Object.defineProperty(globalThis, "scrollTo", {
+  value: vi.fn(),
+  writable: true,
+});
