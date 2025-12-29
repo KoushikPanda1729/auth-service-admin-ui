@@ -1,9 +1,18 @@
-import { ReactNode } from "react";
-import { Layout, Avatar, Badge, Tag, Breadcrumb } from "antd";
-import { BellOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
+import { ReactNode, useState } from "react";
+import { Layout, Avatar, Badge, Tag, Breadcrumb, Dropdown, Drawer, List } from "antd";
+import type { MenuProps } from "antd";
+import {
+  BellOutlined,
+  DownOutlined,
+  HomeOutlined,
+  UserOutlined,
+  LogoutOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { Sidebar } from "./Sidebar";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/paths";
+import { useAuth } from "../../hooks/useAuth";
 
 const { Header: AntHeader, Sider, Content } = Layout;
 
@@ -13,6 +22,9 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
 
   const routeNameMap: Record<string, string> = {
     [ROUTES.DASHBOARD]: "Dashboard",
@@ -96,6 +108,79 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     return breadcrumbItems;
   };
 
+  const handleLogout = async () => {
+    await logout();
+    navigate(ROUTES.LOGIN);
+  };
+
+  const userMenuItems: MenuProps["items"] = [
+    {
+      key: "profile",
+      icon: <UserOutlined />,
+      label: (
+        <div>
+          <div style={{ fontWeight: 600 }}>
+            {user?.firstName} {user?.lastName}
+          </div>
+          <div style={{ fontSize: "12px", color: "#8c8c8c" }}>{user?.email}</div>
+          <div style={{ fontSize: "12px", color: "#8c8c8c", textTransform: "capitalize" }}>
+            {user?.role}
+          </div>
+        </div>
+      ),
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "settings",
+      icon: <SettingOutlined />,
+      label: "Settings",
+      onClick: () => navigate(ROUTES.SETTINGS),
+    },
+    {
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: "Logout",
+      onClick: handleLogout,
+      danger: true,
+    },
+  ];
+
+  // Mock notification data
+  const notifications = [
+    {
+      id: 1,
+      title: "New Order Received",
+      description: "Order #12345 has been placed",
+      time: "5 minutes ago",
+    },
+    {
+      id: 2,
+      title: "Low Stock Alert",
+      description: "Margherita Pizza is running low",
+      time: "1 hour ago",
+    },
+    {
+      id: 3,
+      title: "New User Registration",
+      description: "John Doe has registered as a customer",
+      time: "2 hours ago",
+    },
+    {
+      id: 4,
+      title: "Payment Received",
+      description: "Payment of $125.50 received for Order #12340",
+      time: "3 hours ago",
+    },
+    {
+      id: 5,
+      title: "Menu Updated",
+      description: "New items added to the menu",
+      time: "5 hours ago",
+    },
+  ];
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
@@ -124,20 +209,28 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </Tag>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Badge count={5}>
-              <BellOutlined style={{ fontSize: "18px", cursor: "pointer" }} />
+            <Badge count={notifications.length}>
+              <BellOutlined
+                style={{ fontSize: "18px", cursor: "pointer" }}
+                onClick={() => setNotificationDrawerOpen(true)}
+              />
             </Badge>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                cursor: "pointer",
-              }}
-            >
-              <Avatar src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" size={40} />
-              <DownOutlined style={{ fontSize: "12px" }} />
-            </div>
+            <Dropdown menu={{ items: userMenuItems }} trigger={["click"]} placement="bottomRight">
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  cursor: "pointer",
+                }}
+              >
+                <Avatar
+                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.firstName || "User"}`}
+                  size={40}
+                />
+                <DownOutlined style={{ fontSize: "12px" }} />
+              </div>
+            </Dropdown>
           </div>
         </AntHeader>
         <Content
@@ -151,6 +244,38 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           {children}
         </Content>
       </Layout>
+
+      {/* Notification Drawer */}
+      <Drawer
+        title="Notifications"
+        placement="right"
+        onClose={() => setNotificationDrawerOpen(false)}
+        open={notificationDrawerOpen}
+        width={400}
+      >
+        <List
+          dataSource={notifications}
+          renderItem={(item) => (
+            <List.Item
+              style={{
+                padding: "16px",
+                borderBottom: "1px solid #f0f0f0",
+                cursor: "pointer",
+              }}
+            >
+              <List.Item.Meta
+                title={<div style={{ fontWeight: 600, marginBottom: "4px" }}>{item.title}</div>}
+                description={
+                  <div>
+                    <div style={{ marginBottom: "4px" }}>{item.description}</div>
+                    <div style={{ fontSize: "12px", color: "#8c8c8c" }}>{item.time}</div>
+                  </div>
+                }
+              />
+            </List.Item>
+          )}
+        />
+      </Drawer>
     </Layout>
   );
 };
