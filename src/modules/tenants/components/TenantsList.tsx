@@ -147,7 +147,7 @@ export const TenantsList = () => {
 
   return (
     <Card
-      bordered={false}
+      variant="borderless"
       style={{ borderRadius: "12px" }}
       title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Restaurants</span>}
       extra={

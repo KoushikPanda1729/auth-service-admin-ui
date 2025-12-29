@@ -3,6 +3,7 @@ import { tenantsApi } from "../api/tenantsApi";
 import type {
   Tenant,
   GetTenantsParams,
+  GetTenantsResponse,
   CreateTenantRequest,
   UpdateTenantRequest,
 } from "../api/types";
@@ -27,12 +28,12 @@ const initialState: TenantsState = {
   total: 0,
 };
 
-export const fetchTenants = createAsyncThunk<Tenant[], GetTenantsParams>(
+export const fetchTenants = createAsyncThunk<GetTenantsResponse, GetTenantsParams>(
   "tenants/fetchAll",
   async (params, { rejectWithValue }) => {
     try {
-      const tenants = await tenantsApi.getAll(params);
-      return tenants;
+      const response = await tenantsApi.getAll(params);
+      return response;
     } catch (error) {
       const err = error as { response?: { data?: { message?: string } } };
       return rejectWithValue(err.response?.data?.message || "Failed to fetch tenants");
@@ -117,8 +118,8 @@ const tenantsSlice = createSlice({
       })
       .addCase(fetchTenants.fulfilled, (state, action) => {
         state.loading = false;
-        state.tenants = action.payload;
-        state.total = action.payload.length;
+        state.tenants = action.payload.data;
+        state.total = action.payload.pagination.total;
         state.error = null;
       })
       .addCase(fetchTenants.rejected, (state, action) => {

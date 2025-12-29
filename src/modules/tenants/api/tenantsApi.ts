@@ -1,7 +1,7 @@
 import axiosInstance from "../../../services/api/axios.config";
 import type {
-  Tenant,
   GetTenantsParams,
+  GetTenantsResponse,
   GetTenantByIdResponse,
   CreateTenantRequest,
   CreateTenantResponse,
@@ -11,8 +11,8 @@ import type {
 } from "./types";
 
 export const tenantsApi = {
-  getAll: async (params: GetTenantsParams): Promise<Tenant[]> => {
-    const response = await axiosInstance.get<Tenant[]>("/tenants", {
+  getAll: async (params: GetTenantsParams): Promise<GetTenantsResponse> => {
+    const response = await axiosInstance.get<GetTenantsResponse>("/tenants", {
       params: {
         page: params.page,
         limit: params.limit,

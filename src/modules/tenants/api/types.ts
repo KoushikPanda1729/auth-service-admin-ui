@@ -11,6 +11,16 @@ export interface GetTenantsParams {
   limit: number;
 }
 
+export interface GetTenantsResponse {
+  data: Tenant[];
+  pagination: {
+    total: number;
+    currentPage: number;
+    perPage: number;
+    totalPages: number;
+  };
+}
+
 export interface GetTenantByIdResponse {
   id: number;
   name: string;
