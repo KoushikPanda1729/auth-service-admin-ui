@@ -7,6 +7,7 @@ import {
   UsersPage,
   TenantsPage,
   MenuPage,
+  CreateProductPage,
   OrdersPage,
   OrderDetailPage,
   SalesPage,
@@ -52,6 +53,14 @@ export const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <MenuPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.CREATE_PRODUCT}
+        element={
+          <ProtectedRoute>
+            <CreateProductPage />
           </ProtectedRoute>
         }
       />

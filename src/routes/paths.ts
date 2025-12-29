@@ -6,6 +6,8 @@ export const ROUTES = {
   USERS: "/users",
   TENANTS: "/tenants",
   MENU: "/menu",
+  PRODUCTS: "/products",
+  CREATE_PRODUCT: "/products/create",
   ORDERS: "/orders",
   ORDER_DETAIL: "/orders/:orderId",
   SALES: "/sales",

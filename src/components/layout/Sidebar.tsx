@@ -26,7 +26,7 @@ export const Sidebar = () => {
     {
       key: ROUTES.MENU,
       icon: <ShoppingOutlined />,
-      label: "Menu",
+      label: "Products",
     },
     {
       key: ROUTES.ORDERS,

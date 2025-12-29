@@ -16,7 +16,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   const routeNameMap: Record<string, string> = {
     [ROUTES.DASHBOARD]: "Dashboard",
-    [ROUTES.MENU]: "Menu",
+    [ROUTES.MENU]: "Products",
+    [ROUTES.PRODUCTS]: "Products",
     [ROUTES.ORDERS]: "Orders",
     [ROUTES.SALES]: "Sales",
     [ROUTES.PROMOS]: "Promos",
@@ -49,14 +50,19 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         });
       } else {
         // For nested routes, add parent as a link
+        const parentPath = firstPath === "/menu" ? ROUTES.MENU : firstPath;
         breadcrumbItems.push({
-          title: <Link to={firstPath}>{routeNameMap[firstPath] || pathSnippets[0]}</Link>,
+          title: <Link to={parentPath}>{routeNameMap[firstPath] || pathSnippets[0]}</Link>,
         });
 
-        // Add the detail page (e.g., Order #123)
+        // Add the detail page (e.g., Order #123, Create)
         if (pathSnippets[0] === "orders" && pathSnippets[1]) {
           breadcrumbItems.push({
             title: <span>Order #{pathSnippets[1]}</span>,
+          });
+        } else if (pathSnippets[0] === "products" && pathSnippets[1] === "create") {
+          breadcrumbItems.push({
+            title: <span>Create</span>,
           });
         } else {
           breadcrumbItems.push({
