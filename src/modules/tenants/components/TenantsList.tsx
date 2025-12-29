@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Space, Modal } from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
+import { Card, Table, Button, Space, Modal, Input, Select, Avatar, Dropdown, Tag } from "antd";
+import {
+  SearchOutlined,
+  PlusOutlined,
+  MoreOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
+import type { MenuProps } from "antd";
 import { useTenants } from "../hooks/useTenants";
 import type { Tenant } from "../api/types";
 import { CreateTenantModal } from "./CreateTenantModal";
 import { EditTenantModal } from "./EditTenantModal";
 import { ViewTenantModal } from "./ViewTenantModal";
 import { useAuth } from "../../../hooks/useAuth";
+
+const { Option } = Select;
 
 export const TenantsList = () => {
   const { user } = useAuth();
@@ -26,6 +36,8 @@ export const TenantsList = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [viewModalVisible, setViewModalVisible] = useState(false);
   const [selectedTenantId, setSelectedTenantId] = useState<number | null>(null);
+  const [searchText, setSearchText] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const isAdmin = user?.role === "admin";
   const isManager = user?.role === "manager";
@@ -34,6 +46,7 @@ export const TenantsList = () => {
 
   useEffect(() => {
     loadTenants();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleView = (tenantId: number) => {
@@ -49,7 +62,7 @@ export const TenantsList = () => {
   const handleDelete = (tenantId: number, tenantName: string) => {
     Modal.confirm({
       title: "Delete Tenant",
-      content: `Are you sure you want to delete ${tenantName}?`,
+      content: `Are you sure you want to delete ${tenantName}? This action cannot be undone.`,
       okText: "Delete",
       okType: "danger",
       cancelText: "Cancel",
@@ -59,17 +72,50 @@ export const TenantsList = () => {
     });
   };
 
+  const getActionMenu = (record: Tenant): MenuProps => ({
+    items: [
+      {
+        key: "view",
+        icon: <EyeOutlined />,
+        label: "View",
+        onClick: () => handleView(record.id),
+      },
+      ...(canEdit
+        ? [
+            {
+              key: "edit",
+              icon: <EditOutlined />,
+              label: "Edit",
+              onClick: () => handleEdit(record.id),
+            },
+          ]
+        : []),
+      ...(canCreateDelete
+        ? [
+            {
+              key: "delete",
+              icon: <DeleteOutlined />,
+              label: "Delete",
+              danger: true,
+              onClick: () => handleDelete(record.id, record.name),
+            },
+          ]
+        : []),
+    ],
+  });
+
   const columns: ColumnsType<Tenant> = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      width: 80,
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Tenant name",
+      key: "tenantName",
+      render: (_, record) => (
+        <Space>
+          <Avatar style={{ backgroundColor: "#ff4d4f" }} size={40}>
+            {record.name.charAt(0).toUpperCase()}
+          </Avatar>
+          <span>{record.name}</span>
+        </Space>
+      ),
     },
     {
       title: "Address",
@@ -77,61 +123,60 @@ export const TenantsList = () => {
       key: "address",
     },
     {
-      title: "Created At",
+      title: "Status",
+      key: "status",
+      render: () => <Tag color="green">Active</Tag>,
+    },
+    {
+      title: "Created at",
       dataIndex: "createdAt",
       key: "createdAt",
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: "Updated At",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      render: (date: string) => new Date(date).toLocaleDateString(),
-    },
-    {
       title: "Actions",
       key: "actions",
-      width: 200,
+      width: 80,
       render: (_, record) => (
-        <Space size="small">
-          <Button type="link" icon={<EyeOutlined />} onClick={() => handleView(record.id)}>
-            View
-          </Button>
-          {canEdit && (
-            <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.id)}>
-              Edit
-            </Button>
-          )}
-          {canCreateDelete && (
-            <Button
-              type="link"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record.id, record.name)}
-            >
-              Delete
-            </Button>
-          )}
-        </Space>
+        <Dropdown menu={getActionMenu(record)} trigger={["click"]}>
+          <Button type="text" icon={<MoreOutlined />} />
+        </Dropdown>
       ),
     },
   ];
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Tenants Management</h1>
-        {canCreateDelete && (
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setCreateModalVisible(true)}
-          >
-            Create Tenant
-          </Button>
-        )}
-      </div>
-
+    <Card
+      bordered={false}
+      style={{ borderRadius: "12px" }}
+      title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Tenants</span>}
+      extra={
+        <Space>
+          <Input
+            placeholder="Search..."
+            prefix={<SearchOutlined />}
+            style={{ width: 200 }}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <Select value={statusFilter} onChange={setStatusFilter} style={{ width: 120 }}>
+            <Option value="all">Status</Option>
+            <Option value="active">Active</Option>
+            <Option value="inactive">Inactive</Option>
+          </Select>
+          {canCreateDelete && (
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              style={{ background: "#ff4d4f" }}
+              onClick={() => setCreateModalVisible(true)}
+            >
+              Create Tenant
+            </Button>
+          )}
+        </Space>
+      }
+    >
       <Table
         columns={columns}
         dataSource={tenants}
@@ -172,6 +217,6 @@ export const TenantsList = () => {
           setSelectedTenantId(null);
         }}
       />
-    </div>
+    </Card>
   );
 };
