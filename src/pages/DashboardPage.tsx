@@ -117,7 +117,7 @@ export const DashboardPage = () => {
     },
     yAxis: {
       label: {
-        formatter: (v: string) => `₹${(parseInt(v) / 1000).toFixed(0)}k`,
+        formatter: (v: string) => `₹${(Number.parseInt(v) / 1000).toFixed(0)}k`,
       },
     },
     xAxis: {

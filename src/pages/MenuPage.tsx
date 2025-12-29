@@ -111,7 +111,6 @@ export const MenuPage = () => {
   return (
     <DashboardLayout>
       <Card
-        bordered={false}
         style={{ borderRadius: "12px" }}
         title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Products</span>}
         extra={

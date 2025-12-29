@@ -36,7 +36,7 @@ const Card = ({
     `${getPaddingClass()} ${getShadowClass()} rounded-lg bg-white ${className}`.trim();
 
   return (
-    <AntCard bordered={false} className={combinedClassName} {...props}>
+    <AntCard className={combinedClassName} {...props}>
       {children}
     </AntCard>
   );

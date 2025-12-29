@@ -203,7 +203,6 @@ export const PromosPage = () => {
   return (
     <DashboardLayout>
       <Card
-        bordered={false}
         style={{ borderRadius: "12px" }}
         title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Coupons</span>}
         extra={

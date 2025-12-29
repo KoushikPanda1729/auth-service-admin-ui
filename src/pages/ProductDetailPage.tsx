@@ -122,7 +122,6 @@ export const ProductDetailPage = () => {
         <Row gutter={16}>
           <Col xs={24} lg={16}>
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Product Info</span>}
             >
@@ -166,7 +165,6 @@ export const ProductDetailPage = () => {
             </Card>
 
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Product Image</span>}
             >
@@ -204,7 +202,6 @@ export const ProductDetailPage = () => {
 
           <Col xs={24} lg={8}>
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Product price</span>}
             >
@@ -228,7 +225,6 @@ export const ProductDetailPage = () => {
             </Card>
 
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Spiciness</span>}
             >
@@ -248,7 +244,6 @@ export const ProductDetailPage = () => {
             </Card>
 
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Other properties</span>}
             >
@@ -300,7 +295,6 @@ export const ProductDetailPage = () => {
 
             {!isEditing && (
               <Card
-                bordered={false}
                 style={{ borderRadius: "12px" }}
                 title={<span style={{ fontWeight: "600" }}>Metadata</span>}
               >

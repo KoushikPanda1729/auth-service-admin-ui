@@ -7,7 +7,7 @@ const { Title } = Typography;
 export const SalesPage = () => {
   return (
     <DashboardLayout>
-      <Card bordered={false} style={{ borderRadius: "12px", textAlign: "center", padding: "48px" }}>
+      <Card style={{ borderRadius: "12px", textAlign: "center", padding: "48px" }}>
         <BarChartOutlined style={{ fontSize: "64px", color: "#ff4d4f" }} />
         <Title level={2}>Sales Analytics</Title>
         <p>View detailed sales reports and analytics here</p>

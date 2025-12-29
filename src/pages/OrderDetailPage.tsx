@@ -160,7 +160,7 @@ export const OrderDetailPage = () => {
         </Space>
       </div>
 
-      <Card bordered={false} style={{ marginBottom: "16px", borderRadius: "12px" }}>
+      <Card style={{ marginBottom: "16px", borderRadius: "12px" }}>
         {isEditing ? (
           <Form.Item label="Order Status" style={{ marginBottom: 0 }}>
             <Select value={orderStatus} onChange={setOrderStatus} style={{ width: "100%" }}>
@@ -205,7 +205,6 @@ export const OrderDetailPage = () => {
         <Row gutter={16}>
           <Col xs={24} lg={16}>
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<Text strong>Order Details</Text>}
             >
@@ -249,7 +248,6 @@ export const OrderDetailPage = () => {
 
           <Col xs={24} lg={8}>
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<Text strong>Customer Details</Text>}
             >
@@ -330,11 +328,7 @@ export const OrderDetailPage = () => {
               )}
             </Card>
 
-            <Card
-              bordered={false}
-              style={{ borderRadius: "12px" }}
-              title={<Text strong>Comment</Text>}
-            >
+            <Card style={{ borderRadius: "12px" }} title={<Text strong>Comment</Text>}>
               {isEditing ? (
                 <Form.Item name="comment" style={{ marginBottom: 0 }}>
                   <Input.TextArea

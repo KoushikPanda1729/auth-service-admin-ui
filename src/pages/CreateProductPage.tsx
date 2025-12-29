@@ -49,7 +49,6 @@ export const CreateProductPage = () => {
         <Row gutter={16}>
           <Col xs={24} lg={16}>
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Product Info</span>}
             >
@@ -89,7 +88,6 @@ export const CreateProductPage = () => {
             </Card>
 
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Product Image</span>}
             >
@@ -112,7 +110,6 @@ export const CreateProductPage = () => {
 
           <Col xs={24} lg={8}>
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Product price</span>}
             >
@@ -136,7 +133,6 @@ export const CreateProductPage = () => {
             </Card>
 
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Spiciness</span>}
             >
@@ -156,7 +152,6 @@ export const CreateProductPage = () => {
             </Card>
 
             <Card
-              bordered={false}
               style={{ borderRadius: "12px" }}
               title={<span style={{ fontWeight: "600" }}>Other properties</span>}
             >

@@ -106,7 +106,6 @@ export const OrdersPage = () => {
   return (
     <DashboardLayout>
       <Card
-        bordered={false}
         style={{ borderRadius: "12px" }}
         title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Orders</span>}
         extra={

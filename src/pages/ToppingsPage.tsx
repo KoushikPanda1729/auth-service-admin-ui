@@ -109,7 +109,6 @@ export const ToppingsPage = () => {
   return (
     <DashboardLayout>
       <Card
-        bordered={false}
         style={{ borderRadius: "12px" }}
         title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Toppings</span>}
         extra={

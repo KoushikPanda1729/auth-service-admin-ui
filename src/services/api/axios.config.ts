@@ -56,7 +56,7 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error: AxiosError) => {
-    return Promise.reject(error);
+    throw error;
   }
 );
 
@@ -71,7 +71,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Don't retry refresh endpoint itself
       if (originalRequest.url?.includes("/auth/refresh")) {
-        return Promise.reject(error);
+        throw error;
       }
 
       // If already refreshing, queue this request
@@ -83,7 +83,7 @@ axiosInstance.interceptors.response.use(
             return axiosInstance(originalRequest);
           })
           .catch((err) => {
-            return Promise.reject(err);
+            throw err;
           });
       }
 
@@ -109,7 +109,7 @@ axiosInstance.interceptors.response.use(
         // Refresh failed - reject all queued requests
         processQueue(refreshError as AxiosError);
         isRefreshing = false;
-        return Promise.reject(refreshError);
+        throw refreshError;
       }
     }
 
@@ -140,7 +140,7 @@ axiosInstance.interceptors.response.use(
       notification.error("An unexpected error occurred.");
     }
 
-    return Promise.reject(error);
+    throw error;
   }
 );
 

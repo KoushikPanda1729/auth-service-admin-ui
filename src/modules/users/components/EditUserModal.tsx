@@ -26,6 +26,39 @@ interface EditUserModalProps {
   onClose: () => void;
 }
 
+interface TenantDropdownRenderProps {
+  menu: React.ReactNode;
+  hasMoreTenants: boolean;
+  loadMoreTenants: () => void;
+  tenantsLoading: boolean;
+}
+
+const TenantDropdownRender = ({
+  menu,
+  hasMoreTenants,
+  loadMoreTenants,
+  tenantsLoading,
+}: TenantDropdownRenderProps) => (
+  <>
+    {menu}
+    {hasMoreTenants && (
+      <>
+        <Divider style={{ margin: "8px 0" }} />
+        <div style={{ padding: "8px", textAlign: "center" }}>
+          <Button
+            type="link"
+            onClick={loadMoreTenants}
+            loading={tenantsLoading}
+            style={{ width: "100%" }}
+          >
+            Load More Restaurants
+          </Button>
+        </div>
+      </>
+    )}
+  </>
+);
+
 export const EditUserModal = ({ visible, userId, onClose }: EditUserModalProps) => {
   const [form] = Form.useForm();
   const { selectedUser, handleUpdateUser, loadUserById, loading, clearUser } = useUsers();
@@ -223,24 +256,12 @@ export const EditUserModal = ({ visible, userId, onClose }: EditUserModalProps) 
                   label: `${tenant.name} - ${tenant.address}`,
                 }))}
                 dropdownRender={(menu) => (
-                  <>
-                    {menu}
-                    {hasMoreTenants && (
-                      <>
-                        <Divider style={{ margin: "8px 0" }} />
-                        <div style={{ padding: "8px", textAlign: "center" }}>
-                          <Button
-                            type="link"
-                            onClick={loadMoreTenants}
-                            loading={tenantsLoading}
-                            style={{ width: "100%" }}
-                          >
-                            Load More Restaurants
-                          </Button>
-                        </div>
-                      </>
-                    )}
-                  </>
+                  <TenantDropdownRender
+                    menu={menu}
+                    hasMoreTenants={hasMoreTenants}
+                    loadMoreTenants={loadMoreTenants}
+                    tenantsLoading={tenantsLoading}
+                  />
                 )}
               />
             </Form.Item>

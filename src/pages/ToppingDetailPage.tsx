@@ -112,7 +112,6 @@ export const ToppingDetailPage = () => {
         <Row gutter={16}>
           <Col xs={24} lg={12}>
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Topping's info</span>}
             >
@@ -130,7 +129,6 @@ export const ToppingDetailPage = () => {
             </Card>
 
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Topping's image</span>}
             >
@@ -168,7 +166,6 @@ export const ToppingDetailPage = () => {
 
           <Col xs={24} lg={12}>
             <Card
-              bordered={false}
               style={{ borderRadius: "12px", marginBottom: "16px" }}
               title={<span style={{ fontWeight: "600" }}>Topping's price</span>}
             >
@@ -178,7 +175,6 @@ export const ToppingDetailPage = () => {
             </Card>
 
             <Card
-              bordered={false}
               style={{ borderRadius: "12px" }}
               title={<span style={{ fontWeight: "600" }}>Other properties</span>}
             >
@@ -215,7 +211,6 @@ export const ToppingDetailPage = () => {
 
             {!isEditing && (
               <Card
-                bordered={false}
                 style={{ borderRadius: "12px", marginTop: "16px" }}
                 title={<span style={{ fontWeight: "600" }}>Metadata</span>}
               >
