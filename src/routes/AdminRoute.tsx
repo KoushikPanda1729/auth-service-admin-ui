@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { ROUTES } from "./paths";
-
+//types
 interface AdminRouteProps {
   children: React.ReactNode;
 }
