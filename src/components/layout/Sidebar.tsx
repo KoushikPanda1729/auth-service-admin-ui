@@ -53,7 +53,7 @@ export const Sidebar = () => {
     {
       key: ROUTES.PROMOS,
       icon: <TagOutlined />,
-      label: "Promos",
+      label: "Coupons",
     },
     {
       key: ROUTES.TENANTS,

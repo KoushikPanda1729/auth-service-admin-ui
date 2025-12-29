@@ -22,7 +22,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     [ROUTES.TOPPINGS]: "Toppings",
     [ROUTES.ORDERS]: "Orders",
     [ROUTES.SALES]: "Sales",
-    [ROUTES.PROMOS]: "Promos",
+    [ROUTES.PROMOS]: "Coupons",
     [ROUTES.TENANTS]: "Tenants",
     [ROUTES.USERS]: "Users",
     [ROUTES.SETTINGS]: "Settings",
