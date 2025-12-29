@@ -15,7 +15,7 @@ export const ViewTenantModal = ({ visible, tenantId, onClose }: ViewTenantModalP
     if (visible && tenantId) {
       loadTenantById(tenantId);
     }
-  }, [visible, tenantId]);
+  }, [visible, tenantId, loadTenantById]);
 
   const handleClose = () => {
     clearTenant();

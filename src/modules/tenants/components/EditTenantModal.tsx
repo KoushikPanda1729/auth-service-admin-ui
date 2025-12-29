@@ -17,7 +17,7 @@ export const EditTenantModal = ({ visible, tenantId, onClose }: EditTenantModalP
     if (visible && tenantId) {
       loadTenantById(tenantId);
     }
-  }, [visible, tenantId]);
+  }, [visible, tenantId, loadTenantById]);
 
   useEffect(() => {
     if (selectedTenant) {
