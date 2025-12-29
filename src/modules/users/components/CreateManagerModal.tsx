@@ -31,12 +31,14 @@ export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps
   const { tenants, loadTenants, loading: tenantsLoading, total } = useTenants();
   const [allTenants, setAllTenants] = useState<typeof tenants>([]);
   const [tenantPage, setTenantPage] = useState(1);
+  const [selectedRole, setSelectedRole] = useState<string>("");
   const pageSize = 100;
 
   useEffect(() => {
     if (visible) {
       setTenantPage(1);
       setAllTenants([]);
+      setSelectedRole("");
       loadTenants(1, pageSize);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,9 +65,12 @@ export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      const success = await handleCreateManager(values as CreateManagerRequest);
+      // Remove confirmPassword from submission data
+      const { ...userData } = values;
+      const success = await handleCreateManager(userData as CreateManagerRequest);
       if (success) {
         form.resetFields();
+        setSelectedRole("");
         onClose();
       }
     } catch (error) {
@@ -75,7 +80,16 @@ export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps
 
   const handleCancel = () => {
     form.resetFields();
+    setSelectedRole("");
     onClose();
+  };
+
+  const handleRoleChange = (role: string) => {
+    setSelectedRole(role);
+    // Clear tenant field when role is not manager
+    if (role !== "manager") {
+      form.setFieldValue("tenantId", undefined);
+    }
   };
 
   return (
@@ -148,8 +162,12 @@ export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps
           <Col span={12}>
             <Title level={5}>Roles</Title>
 
-            <Form.Item label="Select role" name="role">
-              <Select placeholder="Select role" disabled>
+            <Form.Item
+              label="Select role"
+              name="role"
+              rules={[{ required: true, message: "Please select a role" }]}
+            >
+              <Select placeholder="Select role" onChange={handleRoleChange}>
                 <Select.Option value="admin">Admin</Select.Option>
                 <Select.Option value="manager">Manager</Select.Option>
                 <Select.Option value="customer">Customer</Select.Option>
@@ -175,47 +193,51 @@ export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps
           </Upload.Dragger>
         </Form.Item>
 
-        {/* Tenant Selection (keeping existing functionality) */}
-        <Divider />
-        <Form.Item
-          label="Tenant"
-          name="tenantId"
-          rules={[{ required: true, message: "Please select a tenant" }]}
-        >
-          <Select
-            placeholder="Select a tenant"
-            loading={tenantsLoading}
-            showSearch
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-            options={allTenants.map((tenant) => ({
-              value: tenant.id,
-              label: `${tenant.name} - ${tenant.address}`,
-            }))}
-            dropdownRender={(menu) => (
-              <>
-                {menu}
-                {hasMoreTenants && (
+        {/* Tenant Selection - Only show for managers */}
+        {selectedRole === "manager" && (
+          <>
+            <Divider />
+            <Form.Item
+              label="Restaurant"
+              name="tenantId"
+              rules={[{ required: true, message: "Please select a restaurant" }]}
+            >
+              <Select
+                placeholder="Select a restaurant"
+                loading={tenantsLoading}
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+                }
+                options={allTenants.map((tenant) => ({
+                  value: tenant.id,
+                  label: `${tenant.name} - ${tenant.address}`,
+                }))}
+                dropdownRender={(menu) => (
                   <>
-                    <Divider style={{ margin: "8px 0" }} />
-                    <div style={{ padding: "8px", textAlign: "center" }}>
-                      <Button
-                        type="link"
-                        onClick={loadMoreTenants}
-                        loading={tenantsLoading}
-                        style={{ width: "100%" }}
-                      >
-                        Load More Tenants
-                      </Button>
-                    </div>
+                    {menu}
+                    {hasMoreTenants && (
+                      <>
+                        <Divider style={{ margin: "8px 0" }} />
+                        <div style={{ padding: "8px", textAlign: "center" }}>
+                          <Button
+                            type="link"
+                            onClick={loadMoreTenants}
+                            loading={tenantsLoading}
+                            style={{ width: "100%" }}
+                          >
+                            Load More Restaurants
+                          </Button>
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
-              </>
-            )}
-          />
-        </Form.Item>
+              />
+            </Form.Item>
+          </>
+        )}
 
         <Row gutter={24}>
           <Col span={12}>

@@ -41,7 +41,8 @@ export interface CreateManagerRequest {
   lastName: string;
   email: string;
   password: string;
-  tenantId: number;
+  role: string;
+  tenantId?: number;
 }
 
 export interface CreateManagerResponse {
@@ -52,6 +53,7 @@ export interface UpdateUserRequest {
   firstName?: string;
   lastName?: string;
   role?: string;
+  tenantId?: number | null;
 }
 
 export interface UpdateUserResponse {
