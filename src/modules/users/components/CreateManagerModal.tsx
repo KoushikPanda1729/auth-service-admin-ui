@@ -87,11 +87,11 @@ export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps
     }
   }, [tenants]);
 
-  const loadMoreTenants = () => {
+  const loadMoreTenants = useCallback(() => {
     const nextPage = tenantPage + 1;
     setTenantPage(nextPage);
     loadTenants(nextPage, pageSize);
-  };
+  }, [tenantPage, loadTenants, pageSize]);
 
   const hasMoreTenants = allTenants.length < total;
 
