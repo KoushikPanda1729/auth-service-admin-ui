@@ -1,8 +1,24 @@
 import { useEffect, useState } from "react";
-import { Modal, Form, Input, Select, Button, Divider } from "antd";
+import {
+  Drawer,
+  Form,
+  Input,
+  Select,
+  Button,
+  Divider,
+  Row,
+  Col,
+  Upload,
+  Switch,
+  Typography,
+  Space,
+} from "antd";
+import { PlusOutlined, InboxOutlined } from "@ant-design/icons";
 import { useUsers } from "../hooks/useUsers";
 import { useTenants } from "../../tenants/hooks/useTenants";
 import type { CreateManagerRequest } from "../api/types";
+
+const { Title } = Typography;
 
 interface CreateManagerModalProps {
   visible: boolean;
@@ -23,6 +39,7 @@ export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps
       setAllTenants([]);
       loadTenants(1, pageSize);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
 
   useEffect(() => {
@@ -52,7 +69,6 @@ export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps
         onClose();
       }
     } catch (error) {
-      // Validation failed or submission error
       console.error("Form validation or submission failed:", error);
     }
   };
@@ -63,60 +79,104 @@ export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps
   };
 
   return (
-    <Modal
-      title="Create Manager"
+    <Drawer
+      title="Create User"
+      placement="right"
+      onClose={handleCancel}
       open={visible}
-      onOk={handleSubmit}
-      onCancel={handleCancel}
-      confirmLoading={loading}
-      okText="Create"
-      cancelText="Cancel"
+      width={720}
+      extra={
+        <Space>
+          <Button onClick={handleCancel}>Cancel</Button>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            style={{ background: "#ff4d4f" }}
+            onClick={handleSubmit}
+            loading={loading}
+          >
+            Save
+          </Button>
+        </Space>
+      }
     >
       <Form form={form} layout="vertical" autoComplete="off">
-        <Form.Item
-          label="First Name"
-          name="firstName"
-          rules={[
-            { required: true, message: "Please enter first name" },
-            { min: 2, message: "First name must be at least 2 characters" },
-          ]}
-        >
-          <Input placeholder="Enter first name" />
+        <Row gutter={24}>
+          {/* Left Column - Basic Info */}
+          <Col span={12}>
+            <Title level={5}>Basic Info</Title>
+
+            <Form.Item
+              label="First name"
+              name="firstName"
+              rules={[
+                { required: true, message: "Please enter first name" },
+                { min: 2, message: "First name must be at least 2 characters" },
+              ]}
+            >
+              <Input placeholder="Enter first name" />
+            </Form.Item>
+
+            <Form.Item
+              label="Last name"
+              name="lastName"
+              rules={[
+                { required: true, message: "Please enter last name" },
+                { min: 2, message: "Last name must be at least 2 characters" },
+              ]}
+            >
+              <Input placeholder="Enter last name" />
+            </Form.Item>
+
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                { required: true, message: "Please enter email" },
+                { type: "email", message: "Please enter a valid email" },
+              ]}
+            >
+              <Input placeholder="Enter email" type="email" />
+            </Form.Item>
+
+            <Form.Item label="Phone number" name="phoneNumber">
+              <Input placeholder="Enter phone number" disabled />
+            </Form.Item>
+          </Col>
+
+          {/* Right Column - Roles */}
+          <Col span={12}>
+            <Title level={5}>Roles</Title>
+
+            <Form.Item label="Select role" name="role">
+              <Select placeholder="Select role" disabled>
+                <Select.Option value="admin">Admin</Select.Option>
+                <Select.Option value="manager">Manager</Select.Option>
+                <Select.Option value="customer">Customer</Select.Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item label="Designation" name="designation">
+              <Input placeholder="Enter designation" disabled />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        {/* Profile Image */}
+        <Divider />
+        <Title level={5}>Profile Image</Title>
+        <Form.Item name="profileImage">
+          <Upload.Dragger disabled>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined style={{ fontSize: "48px", color: "#ff4d4f" }} />
+            </p>
+            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+            <p className="ant-upload-hint">Support only single file</p>
+          </Upload.Dragger>
         </Form.Item>
 
-        <Form.Item
-          label="Last Name"
-          name="lastName"
-          rules={[
-            { required: true, message: "Please enter last name" },
-            { min: 2, message: "Last name must be at least 2 characters" },
-          ]}
-        >
-          <Input placeholder="Enter last name" />
-        </Form.Item>
-
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            { required: true, message: "Please enter email" },
-            { type: "email", message: "Please enter a valid email" },
-          ]}
-        >
-          <Input placeholder="Enter email" type="email" />
-        </Form.Item>
-
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[
-            { required: true, message: "Please enter password" },
-            { min: 6, message: "Password must be at least 6 characters" },
-          ]}
-        >
-          <Input.Password placeholder="Enter password" />
-        </Form.Item>
-
+        {/* Tenant Selection (keeping existing functionality) */}
+        <Divider />
         <Form.Item
           label="Tenant"
           name="tenantId"
@@ -156,7 +216,65 @@ export const CreateManagerModal = ({ visible, onClose }: CreateManagerModalProps
             )}
           />
         </Form.Item>
+
+        <Row gutter={24}>
+          <Col span={12}>
+            {/* Other Properties */}
+            <Divider />
+            <Title level={5}>Other properties</Title>
+            <Form.Item name="ban" valuePropName="checked">
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <span>Ban</span>
+                <Switch disabled />
+              </div>
+            </Form.Item>
+          </Col>
+        </Row>
+
+        {/* Security Info */}
+        <Divider />
+        <Title level={5}>Security Info</Title>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[
+                { required: true, message: "Please enter password" },
+                { min: 6, message: "Password must be at least 6 characters" },
+              ]}
+            >
+              <Input.Password placeholder="Enter password" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Confirm password"
+              name="confirmPassword"
+              dependencies={["password"]}
+              rules={[
+                { required: true, message: "Please confirm password" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error("Passwords do not match"));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password placeholder="Confirm password" />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
-    </Modal>
+    </Drawer>
   );
 };

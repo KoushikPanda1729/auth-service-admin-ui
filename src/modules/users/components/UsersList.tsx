@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Space, Modal, Tag } from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { Card, Table, Button, Space, Modal, Tag, Input, Select, Avatar, Dropdown } from "antd";
+import {
+  SearchOutlined,
+  PlusOutlined,
+  MoreOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
+import type { MenuProps } from "antd";
 import { useUsers } from "../hooks/useUsers";
 import type { User } from "../api/types";
 import { CreateManagerModal } from "./CreateManagerModal";
 import { EditUserModal } from "./EditUserModal";
+
+const { Option } = Select;
 
 export const UsersList = () => {
   const {
@@ -22,9 +31,13 @@ export const UsersList = () => {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     loadUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleEdit = (userId: number) => {
@@ -45,35 +58,64 @@ export const UsersList = () => {
     });
   };
 
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case "admin":
-        return "red";
-      case "manager":
-        return "blue";
-      case "customer":
-        return "green";
-      default:
-        return "default";
-    }
+  const getActionMenu = (record: User): MenuProps => ({
+    items: [
+      {
+        key: "edit",
+        icon: <EditOutlined />,
+        label: "Edit",
+        onClick: () => handleEdit(record.id),
+      },
+      {
+        key: "delete",
+        icon: <DeleteOutlined />,
+        label: "Delete",
+        danger: true,
+        onClick: () => handleDelete(record.id, `${record.firstName} ${record.lastName}`),
+      },
+    ],
+  });
+
+  const getStatusTag = () => {
+    // For now, showing all users as active (you can extend this later)
+    return <Tag color="green">Active</Tag>;
+  };
+
+  const getRoleDisplay = (role: string) => {
+    const roleMap: Record<string, string> = {
+      admin: "Admin",
+      manager: "Manager",
+      customer: "Customer",
+    };
+    return roleMap[role] || role;
   };
 
   const columns: ColumnsType<User> = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      width: 80,
+      title: "User name",
+      key: "userName",
+      render: (_, record) => (
+        <Space>
+          <Avatar
+            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${record.firstName}`}
+            size={40}
+          />
+          <span>
+            {record.firstName} {record.lastName}
+          </span>
+        </Space>
+      ),
     },
     {
-      title: "First Name",
-      dataIndex: "firstName",
-      key: "firstName",
+      title: "Status",
+      key: "status",
+      render: () => getStatusTag(),
     },
     {
-      title: "Last Name",
-      dataIndex: "lastName",
-      key: "lastName",
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+      render: (role: string) => getRoleDisplay(role),
     },
     {
       title: "Email",
@@ -81,42 +123,59 @@ export const UsersList = () => {
       key: "email",
     },
     {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
-      render: (role: string) => <Tag color={getRoleColor(role)}>{role.toUpperCase()}</Tag>,
+      title: "Created at",
+      key: "createdAt",
+      render: () => "25 July 2022", // Placeholder - replace with actual data when available
     },
     {
       title: "Actions",
       key: "actions",
-      width: 150,
+      width: 80,
       render: (_, record) => (
-        <Space size="small">
-          <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.id)}>
-            Edit
-          </Button>
-          <Button
-            type="link"
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id, `${record.firstName} ${record.lastName}`)}
-          >
-            Delete
-          </Button>
-        </Space>
+        <Dropdown menu={getActionMenu(record)} trigger={["click"]}>
+          <Button type="text" icon={<MoreOutlined />} />
+        </Dropdown>
       ),
     },
   ];
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Users Management</h1>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateModalVisible(true)}>
-          Create Manager
-        </Button>
-      </div>
-
+    <Card
+      bordered={false}
+      style={{ borderRadius: "12px" }}
+      title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Users</span>}
+      extra={
+        <Space>
+          <Input
+            placeholder="Search..."
+            prefix={<SearchOutlined />}
+            style={{ width: 200 }}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <Select value={statusFilter} onChange={setStatusFilter} style={{ width: 120 }}>
+            <Option value="all">Status</Option>
+            <Option value="active">Active</Option>
+            <Option value="banned">Banned</Option>
+            <Option value="valid">Valid</Option>
+          </Select>
+          <Select value={roleFilter} onChange={setRoleFilter} style={{ width: 120 }}>
+            <Option value="all">Role</Option>
+            <Option value="admin">Admin</Option>
+            <Option value="manager">Manager</Option>
+            <Option value="customer">Customer</Option>
+          </Select>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            style={{ background: "#ff4d4f" }}
+            onClick={() => setCreateModalVisible(true)}
+          >
+            Create users
+          </Button>
+        </Space>
+      }
+    >
       <Table
         columns={columns}
         dataSource={users}
@@ -144,6 +203,6 @@ export const UsersList = () => {
           setSelectedUserId(null);
         }}
       />
-    </div>
+    </Card>
   );
 };
