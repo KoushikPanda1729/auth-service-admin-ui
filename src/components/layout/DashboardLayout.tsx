@@ -1,17 +1,109 @@
 import { ReactNode } from "react";
-import { Header } from "./Header";
+import { Layout, Avatar, Badge, Tag, Breadcrumb } from "antd";
+import { BellOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
+import { Sidebar } from "./Sidebar";
+import { useLocation, Link } from "react-router-dom";
+import { ROUTES } from "../../routes/paths";
+
+const { Header: AntHeader, Sider, Content } = Layout;
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+  const location = useLocation();
+
+  const routeNameMap: Record<string, string> = {
+    [ROUTES.DASHBOARD]: "Dashboard",
+    [ROUTES.MENU]: "Menu",
+    [ROUTES.ORDERS]: "Orders",
+    [ROUTES.SALES]: "Sales",
+    [ROUTES.PROMOS]: "Promos",
+    [ROUTES.TENANTS]: "Tenants",
+    [ROUTES.USERS]: "Users",
+    [ROUTES.SETTINGS]: "Settings",
+    [ROUTES.HELP]: "Help",
+  };
+
+  const getBreadcrumbItems = () => {
+    const pathSnippets = location.pathname.split("/").filter((i) => i);
+
+    const breadcrumbItems = [
+      {
+        title: (
+          <Link to={ROUTES.DASHBOARD}>
+            <HomeOutlined />
+          </Link>
+        ),
+      },
+    ];
+
+    if (location.pathname !== ROUTES.DASHBOARD) {
+      const currentPath = `/${pathSnippets[0]}`;
+      breadcrumbItems.push({
+        title: <span>{routeNameMap[currentPath] || pathSnippets[0]}</span>,
+      });
+    }
+
+    return breadcrumbItems;
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">{children}</div>
-      </main>
-    </div>
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider
+        width={240}
+        style={{
+          background: "#fff",
+          borderRight: "1px solid #f0f0f0",
+        }}
+      >
+        <Sidebar />
+      </Sider>
+      <Layout>
+        <AntHeader
+          style={{
+            background: "#fff",
+            padding: "0 24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderBottom: "1px solid #f0f0f0",
+          }}
+        >
+          <div>
+            <Tag color="orange" style={{ borderRadius: "12px" }}>
+              Bandra, Mumbai
+            </Tag>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <Badge count={5}>
+              <BellOutlined style={{ fontSize: "18px", cursor: "pointer" }} />
+            </Badge>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                cursor: "pointer",
+              }}
+            >
+              <Avatar src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" size={40} />
+              <DownOutlined style={{ fontSize: "12px" }} />
+            </div>
+          </div>
+        </AntHeader>
+        <Content
+          style={{
+            padding: "24px",
+            background: "#f5f5f5",
+            minHeight: "calc(100vh - 64px)",
+          }}
+        >
+          <Breadcrumb items={getBreadcrumbItems()} style={{ marginBottom: "16px" }} />
+          {children}
+        </Content>
+      </Layout>
+    </Layout>
   );
 };

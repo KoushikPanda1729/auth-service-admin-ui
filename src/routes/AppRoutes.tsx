@@ -6,6 +6,12 @@ import {
   NotFoundPage,
   UsersPage,
   TenantsPage,
+  MenuPage,
+  OrdersPage,
+  SalesPage,
+  PromosPage,
+  SettingsPage,
+  HelpPage,
 } from "../pages";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { AdminRoute } from "./AdminRoute";
@@ -41,6 +47,38 @@ export const AppRoutes = () => {
         }
       />
       <Route
+        path={ROUTES.MENU}
+        element={
+          <ProtectedRoute>
+            <MenuPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.ORDERS}
+        element={
+          <ProtectedRoute>
+            <OrdersPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.SALES}
+        element={
+          <ProtectedRoute>
+            <SalesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PROMOS}
+        element={
+          <ProtectedRoute>
+            <PromosPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path={ROUTES.USERS}
         element={
           <AdminRoute>
@@ -53,6 +91,22 @@ export const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <TenantsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.SETTINGS}
+        element={
+          <ProtectedRoute>
+            <SettingsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.HELP}
+        element={
+          <ProtectedRoute>
+            <HelpPage />
           </ProtectedRoute>
         }
       />

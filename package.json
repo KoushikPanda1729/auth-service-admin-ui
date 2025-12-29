@@ -16,6 +16,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@ant-design/plots": "^2.6.8",
     "@reduxjs/toolkit": "^2.0.1",
     "antd": "^5.12.8",
     "axios": "^1.6.5",
