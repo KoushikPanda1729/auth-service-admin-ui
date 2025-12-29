@@ -12,7 +12,13 @@ export interface GetUsersParams {
 }
 
 export interface GetUsersResponse {
-  users: User[];
+  data: User[];
+  pagination: {
+    total: number;
+    currentPage: number;
+    perPage: number;
+    totalPages: number;
+  };
 }
 
 export interface GetUserByIdResponse {

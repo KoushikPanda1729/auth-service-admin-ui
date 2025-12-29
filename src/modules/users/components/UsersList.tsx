@@ -141,7 +141,7 @@ export const UsersList = () => {
 
   return (
     <Card
-      bordered={false}
+      variant="borderless"
       style={{ borderRadius: "12px" }}
       title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Users</span>}
       extra={

@@ -1,6 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { usersApi } from "../api/usersApi";
-import type { User, GetUsersParams, CreateManagerRequest, UpdateUserRequest } from "../api/types";
+import type {
+  User,
+  GetUsersParams,
+  GetUsersResponse,
+  CreateManagerRequest,
+  UpdateUserRequest,
+} from "../api/types";
 
 interface UsersState {
   users: User[];
@@ -22,12 +28,12 @@ const initialState: UsersState = {
   total: 0,
 };
 
-export const fetchUsers = createAsyncThunk<User[], GetUsersParams>(
+export const fetchUsers = createAsyncThunk<GetUsersResponse, GetUsersParams>(
   "users/fetchAll",
   async (params, { rejectWithValue }) => {
     try {
-      const users = await usersApi.getAll(params);
-      return users;
+      const response = await usersApi.getAll(params);
+      return response;
     } catch (error) {
       const err = error as { response?: { data?: { message?: string } } };
       return rejectWithValue(err.response?.data?.message || "Failed to fetch users");
@@ -112,8 +118,8 @@ const usersSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.users = action.payload;
-        state.total = action.payload.length;
+        state.users = action.payload.data;
+        state.total = action.payload.pagination.total;
         state.error = null;
       })
       .addCase(fetchUsers.rejected, (state, action) => {

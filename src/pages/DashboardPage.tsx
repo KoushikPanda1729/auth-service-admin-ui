@@ -140,7 +140,7 @@ export const DashboardPage = () => {
       {/* Stats Cards */}
       <Row gutter={[24, 24]}>
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} style={{ borderRadius: "12px" }}>
+          <Card variant="borderless" style={{ borderRadius: "12px" }}>
             <Statistic
               title="Total Orders"
               value={156}
@@ -151,7 +151,7 @@ export const DashboardPage = () => {
         </Col>
 
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} style={{ borderRadius: "12px" }}>
+          <Card variant="borderless" style={{ borderRadius: "12px" }}>
             <Statistic
               title="Total Revenue"
               value={50000}
@@ -163,7 +163,7 @@ export const DashboardPage = () => {
         </Col>
 
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} style={{ borderRadius: "12px" }}>
+          <Card variant="borderless" style={{ borderRadius: "12px" }}>
             <Statistic
               title="Total Customers"
               value={89}
@@ -174,7 +174,7 @@ export const DashboardPage = () => {
         </Col>
 
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} style={{ borderRadius: "12px" }}>
+          <Card variant="borderless" style={{ borderRadius: "12px" }}>
             <Statistic
               title="Avg Order Value"
               value={1250}
@@ -189,7 +189,7 @@ export const DashboardPage = () => {
       <Row gutter={[24, 24]} style={{ marginTop: "24px" }}>
         <Col xs={24} lg={16}>
           <Card
-            bordered={false}
+            variant="borderless"
             style={{ borderRadius: "12px" }}
             title={<span style={{ fontSize: "18px", fontWeight: 600 }}>Sales Overview</span>}
             extra={
@@ -207,7 +207,7 @@ export const DashboardPage = () => {
 
         <Col xs={24} lg={8}>
           <Card
-            bordered={false}
+            variant="borderless"
             style={{ borderRadius: "12px" }}
             title={
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>

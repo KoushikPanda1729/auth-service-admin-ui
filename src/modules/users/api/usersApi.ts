@@ -1,7 +1,7 @@
 import axiosInstance from "../../../services/api/axios.config";
 import type {
-  User,
   GetUsersParams,
+  GetUsersResponse,
   GetUserByIdResponse,
   CreateManagerRequest,
   CreateManagerResponse,
@@ -11,8 +11,8 @@ import type {
 } from "./types";
 
 export const usersApi = {
-  getAll: async (params: GetUsersParams): Promise<User[]> => {
-    const response = await axiosInstance.get<User[]>("/users", {
+  getAll: async (params: GetUsersParams): Promise<GetUsersResponse> => {
+    const response = await axiosInstance.get<GetUsersResponse>("/users", {
       params: {
         page: params.page,
         limit: params.limit,
