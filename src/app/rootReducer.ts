@@ -5,6 +5,7 @@ import usersReducer from "../modules/users/store/usersSlice";
 import tenantsReducer from "../modules/tenants/store/tenantsSlice";
 import categoriesReducer from "../modules/categories/store/categoriesSlice";
 import productsReducer from "../modules/products/store/productsSlice";
+import toppingsReducer from "../modules/toppings/store/toppingsSlice";
 
 const rootReducer = combineReducers({
   login: loginReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   tenants: tenantsReducer,
   categories: categoriesReducer,
   products: productsReducer,
+  toppings: toppingsReducer,
 });
 
 export default rootReducer;
