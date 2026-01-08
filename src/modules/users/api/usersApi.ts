@@ -9,10 +9,11 @@ import type {
   UpdateUserResponse,
   DeleteUserResponse,
 } from "./types";
+import { AUTH_SERVICE } from "../../../config/apiConfig";
 
 export const usersApi = {
   getAll: async (params: GetUsersParams): Promise<GetUsersResponse> => {
-    const response = await axiosInstance.get<GetUsersResponse>("/users", {
+    const response = await axiosInstance.get<GetUsersResponse>(`${AUTH_SERVICE}/users`, {
       params: {
         page: params.page,
         limit: params.limit,
@@ -24,22 +25,32 @@ export const usersApi = {
   },
 
   getById: async (userId: number): Promise<GetUserByIdResponse> => {
-    const response = await axiosInstance.get<GetUserByIdResponse>(`/users/${userId}`);
+    const response = await axiosInstance.get<GetUserByIdResponse>(
+      `${AUTH_SERVICE}/users/${userId}`
+    );
     return response.data;
   },
 
   createManager: async (data: CreateManagerRequest): Promise<CreateManagerResponse> => {
-    const response = await axiosInstance.post<CreateManagerResponse>("/users/create-manager", data);
+    const response = await axiosInstance.post<CreateManagerResponse>(
+      `${AUTH_SERVICE}/users/create-manager`,
+      data
+    );
     return response.data;
   },
 
   update: async (userId: number, data: UpdateUserRequest): Promise<UpdateUserResponse> => {
-    const response = await axiosInstance.patch<UpdateUserResponse>(`/users/${userId}`, data);
+    const response = await axiosInstance.patch<UpdateUserResponse>(
+      `${AUTH_SERVICE}/users/${userId}`,
+      data
+    );
     return response.data;
   },
 
   delete: async (userId: number): Promise<DeleteUserResponse> => {
-    const response = await axiosInstance.delete<DeleteUserResponse>(`/users/${userId}`);
+    const response = await axiosInstance.delete<DeleteUserResponse>(
+      `${AUTH_SERVICE}/users/${userId}`
+    );
     return response.data;
   },
 };

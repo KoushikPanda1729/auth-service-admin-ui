@@ -20,47 +20,66 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ColumnType } from "antd/es/table";
 import type { MenuProps } from "antd";
+import { useCategories } from "../modules/categories/hooks/useCategories";
+import type { Category } from "../modules/categories/api/types";
+import dayjs from "dayjs";
 
-interface CategoryData {
+interface CategoryTableData extends Category {
   key: string;
-  id: string;
-  name: string;
-  status: "published" | "draft";
-  createdAt: string;
 }
 
 export const CategoriesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<CategoryData | null>(null);
+  const [editingCategory, setEditingCategory] = useState<CategoryTableData | null>(null);
   const [form] = Form.useForm();
 
-  const handleEdit = (category: CategoryData) => {
+  const {
+    categories,
+    loading,
+    error,
+    currentPage,
+    pageSize,
+    total,
+    searchQuery,
+    loadCategories,
+    handleCreateCategory,
+    handleUpdateCategory,
+    handleDeleteCategory,
+    handleSearchChange,
+    handlePageChange,
+  } = useCategories();
+
+  useEffect(() => {
+    loadCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleEdit = (category: CategoryTableData) => {
     setEditingCategory(category);
     form.setFieldsValue({
       name: category.name,
-      publish: category.status === "published",
+      publish: category.isPublished ?? true,
     });
     setIsModalOpen(true);
   };
 
-  const handleDelete = (category: CategoryData) => {
+  const handleDelete = (category: CategoryTableData) => {
     Modal.confirm({
       title: "Delete Category",
       content: `Are you sure you want to delete "${category.name}"? This action cannot be undone.`,
       okText: "Delete",
       okType: "danger",
       cancelText: "Cancel",
-      onOk() {
-        console.log("Deleting category:", category.id);
-        message.success("Category deleted successfully!");
+      async onOk() {
+        await handleDeleteCategory(category._id);
       },
     });
   };
 
-  const getActionMenu = (record: CategoryData): MenuProps => ({
+  const getActionMenu = (record: CategoryTableData): MenuProps => ({
     items: [
       {
         key: "edit",
@@ -78,7 +97,7 @@ export const CategoriesPage = () => {
     ],
   });
 
-  const columns: ColumnType<CategoryData>[] = [
+  const columns: ColumnType<CategoryTableData>[] = [
     {
       title: "Category name",
       dataIndex: "name",
@@ -86,21 +105,19 @@ export const CategoriesPage = () => {
     },
     {
       title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) => {
-        const statusConfig = {
-          published: { color: "green", text: "Published" },
-          draft: { color: "default", text: "Draft" },
-        };
-        const config = statusConfig[status as keyof typeof statusConfig];
-        return <Tag color={config.color}>{config.text}</Tag>;
-      },
+      dataIndex: "isPublished",
+      key: "isPublished",
+      render: (isPublished?: boolean) => (
+        <Tag color={isPublished !== false ? "green" : "default"}>
+          {isPublished !== false ? "Published" : "Draft"}
+        </Tag>
+      ),
     },
     {
       title: "Created at",
       dataIndex: "createdAt",
       key: "createdAt",
+      render: (date: string) => dayjs(date).format("DD MMMM YYYY"),
     },
     {
       title: "Actions",
@@ -114,36 +131,35 @@ export const CategoriesPage = () => {
     },
   ];
 
-  const data: CategoryData[] = [
-    {
-      key: "1",
-      id: "1",
-      name: "Pizza",
-      status: "published",
-      createdAt: "25 July 2022",
-    },
-    {
-      key: "2",
-      id: "2",
-      name: "Cold drinks",
-      status: "published",
-      createdAt: "25 July 2022",
-    },
-  ];
+  const tableData: CategoryTableData[] = categories.map((category) => ({
+    ...category,
+    key: category._id,
+  }));
 
-  const handleSave = () => {
-    form.validateFields().then((values) => {
+  const handleSave = async () => {
+    try {
+      const values = await form.validateFields();
       if (editingCategory) {
-        console.log("Updating category:", editingCategory.id, values);
-        message.success("Category updated successfully!");
+        await handleUpdateCategory(editingCategory._id, {
+          name: values.name,
+          priceCofigration: editingCategory.priceCofigration,
+          attributes: editingCategory.attributes,
+          isPublished: values.publish,
+        });
       } else {
-        console.log("Creating category:", values);
-        message.success("Category created successfully!");
+        await handleCreateCategory({
+          name: values.name,
+          priceCofigration: {},
+          attributes: [],
+          isPublished: values.publish,
+        });
       }
       form.resetFields();
       setEditingCategory(null);
       setIsModalOpen(false);
-    });
+    } catch (error) {
+      console.error("Error saving category:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -158,6 +174,12 @@ export const CategoriesPage = () => {
     setIsModalOpen(true);
   };
 
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
+
   return (
     <DashboardLayout>
       <Card
@@ -169,6 +191,12 @@ export const CategoriesPage = () => {
               placeholder="Search categories..."
               prefix={<SearchOutlined />}
               style={{ width: 200 }}
+              value={searchQuery}
+              onChange={(e) => {
+                handleSearchChange(e.target.value);
+                loadCategories();
+              }}
+              allowClear
             />
             <Button
               type="primary"
@@ -183,10 +211,14 @@ export const CategoriesPage = () => {
       >
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={tableData}
+          loading={loading}
           pagination={{
-            pageSize: 10,
+            current: currentPage,
+            pageSize: pageSize,
+            total: total,
             showSizeChanger: false,
+            onChange: handlePageChange,
           }}
         />
       </Card>

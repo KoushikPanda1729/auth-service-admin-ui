@@ -2,8 +2,9 @@ import axios from "axios";
 import type { AxiosInstance, AxiosError, InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import { getToken } from "../storage/localStorage";
 import { notification } from "../notification/notification";
+import { KONG_GATEWAY_URL, AUTH_SERVICE } from "../../config/apiConfig";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5501";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || KONG_GATEWAY_URL;
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -34,7 +35,7 @@ const processQueue = (error: AxiosError | null = null) => {
 
 const refreshAccessToken = async (): Promise<{ id: number }> => {
   const response = await axios.post(
-    `${API_BASE_URL}/auth/refresh`,
+    `${API_BASE_URL}${AUTH_SERVICE}/auth/refresh`,
     {},
     {
       withCredentials: true,
@@ -70,7 +71,7 @@ axiosInstance.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Don't retry refresh endpoint itself
-      if (originalRequest.url?.includes("/auth/refresh")) {
+      if (originalRequest.url?.includes(`${AUTH_SERVICE}/auth/refresh`)) {
         throw error;
       }
 
