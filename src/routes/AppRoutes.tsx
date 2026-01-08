@@ -20,7 +20,6 @@ const UsersPage = lazy(() => import("../pages/UsersPage").then((m) => ({ default
 const TenantsPage = lazy(() =>
   import("../pages/TenantsPage").then((m) => ({ default: m.TenantsPage }))
 );
-const MenuPage = lazy(() => import("../pages/MenuPage").then((m) => ({ default: m.MenuPage })));
 const CreateProductPage = lazy(() =>
   import("../pages/CreateProductPage").then((m) => ({ default: m.CreateProductPage }))
 );
@@ -29,6 +28,9 @@ const ProductDetailPage = lazy(() =>
 );
 const CategoriesPage = lazy(() =>
   import("../pages/CategoriesPage").then((m) => ({ default: m.CategoriesPage }))
+);
+const ProductsPage = lazy(() =>
+  import("../pages/ProductsPage").then((m) => ({ default: m.ProductsPage }))
 );
 const ToppingsPage = lazy(() =>
   import("../pages/ToppingsPage").then((m) => ({ default: m.ToppingsPage }))
@@ -84,10 +86,10 @@ export const AppRoutes = () => {
           }
         />
         <Route
-          path={ROUTES.MENU}
+          path={ROUTES.PRODUCTS}
           element={
             <ProtectedRoute>
-              <MenuPage />
+              <ProductsPage />
             </ProtectedRoute>
           }
         />
