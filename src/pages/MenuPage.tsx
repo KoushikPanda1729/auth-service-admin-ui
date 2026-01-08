@@ -1,35 +1,50 @@
 import { DashboardLayout } from "../components/layout/DashboardLayout";
-import { Card, Table, Tag, Button, Input, Select, Space, Avatar } from "antd";
-import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
+import { Card, Table, Tag, Button, Input, Select, Space, Avatar, Image } from "antd";
+import { SearchOutlined, PlusOutlined, CloseCircleFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import type { ColumnType } from "antd/es/table";
+import { useProducts } from "../modules/products/hooks/useProducts";
+import type { Product } from "../modules/products/api/types";
+import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 const { Option } = Select;
 
-interface ProductData {
+interface ProductTableData extends Product {
   key: string;
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  status: "published" | "draft";
-  createdAt: string;
-  image: string;
 }
 
 export const MenuPage = () => {
   const navigate = useNavigate();
+  const [localSearch, setLocalSearch] = useState("");
 
-  const columns: ColumnType<ProductData>[] = [
+  const { products, loading, currentPage, pageSize, total, loadProducts, handlePageChange } =
+    useProducts();
+
+  useEffect(() => {
+    loadProducts(1, pageSize, "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const columns: ColumnType<ProductTableData>[] = [
     {
       title: "Product name",
       dataIndex: "name",
       key: "name",
-      render: (name: string, record: ProductData) => (
+      render: (name: string, record: ProductTableData) => (
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <Avatar size={48} style={{ fontSize: "24px" }}>
-            {record.image}
-          </Avatar>
+          {record.image ? (
+            <Image
+              src={record.image}
+              alt={name}
+              width={48}
+              height={48}
+              style={{ objectFit: "cover", borderRadius: "4px" }}
+              preview={false}
+            />
+          ) : (
+            <Avatar size={48}>{name.charAt(0)}</Avatar>
+          )}
           <span>{name}</span>
         </div>
       ),
@@ -42,71 +57,30 @@ export const MenuPage = () => {
     },
     {
       title: "Category",
-      dataIndex: "category",
-      key: "category",
+      dataIndex: "categoryId",
+      key: "categoryId",
+      render: (categoryId: string) => categoryId || "N/A",
     },
     {
       title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) => {
-        const statusConfig = {
-          published: { color: "green", text: "Published" },
-          draft: { color: "default", text: "Draft" },
-        };
-        const config = statusConfig[status as keyof typeof statusConfig];
-        return <Tag color={config.color}>{config.text}</Tag>;
-      },
+      dataIndex: "isPublished",
+      key: "isPublished",
+      render: (isPublished: boolean) => (
+        <Tag color={isPublished ? "green" : "default"}>{isPublished ? "Published" : "Draft"}</Tag>
+      ),
     },
     {
       title: "Created at",
       dataIndex: "createdAt",
       key: "createdAt",
+      render: (date: string) => dayjs(date).format("DD MMMM YYYY"),
     },
   ];
 
-  const data: ProductData[] = [
-    {
-      key: "1",
-      id: "1",
-      name: "Pepperoni Pizza",
-      description: "Juicy chicken fillet and crispy bacon combined with...",
-      category: "Pizza",
-      status: "published",
-      createdAt: "25 July 2022",
-      image: "🍕",
-    },
-    {
-      key: "2",
-      id: "2",
-      name: "Margarita",
-      description: "Juicy chicken fillet and crispy bacon combined with...",
-      category: "Pizza",
-      status: "draft",
-      createdAt: "25 July 2022",
-      image: "🍕",
-    },
-    {
-      key: "3",
-      id: "3",
-      name: "Pepsi",
-      description: "Outstanding flavor cake ding by Pepsi",
-      category: "Cold drinks",
-      status: "published",
-      createdAt: "25 July 2022",
-      image: "🥤",
-    },
-    {
-      key: "4",
-      id: "4",
-      name: "Orange Juice",
-      description: "Fresh apple juicy with from great quality oranges",
-      category: "Cold drinks",
-      status: "published",
-      createdAt: "25 July 2022",
-      image: "🧃",
-    },
-  ];
+  const tableData: ProductTableData[] = products.map((product) => ({
+    ...product,
+    key: product._id,
+  }));
 
   return (
     <DashboardLayout>
@@ -115,11 +89,49 @@ export const MenuPage = () => {
         title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Products</span>}
         extra={
           <Space>
-            <Input
-              placeholder="Search products..."
-              prefix={<SearchOutlined />}
-              style={{ width: 200 }}
-            />
+            <div style={{ position: "relative" }}>
+              <Input
+                placeholder="Search products..."
+                prefix={<SearchOutlined />}
+                style={{ width: 200, paddingRight: localSearch ? "30px" : "11px" }}
+                value={localSearch}
+                onChange={(e) => {
+                  const newSearchValue = e.target.value ?? "";
+                  console.log("========== INPUT onChange ==========");
+                  console.log(
+                    "New value:",
+                    `"${newSearchValue}"`,
+                    "Length:",
+                    newSearchValue.length
+                  );
+                  setLocalSearch(newSearchValue);
+                  loadProducts(1, pageSize, newSearchValue);
+                }}
+                onKeyDown={(e) => {
+                  console.log("Key pressed:", e.key);
+                }}
+              />
+              {localSearch && (
+                <CloseCircleFilled
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log("CLEAR CLICKED!");
+                    setLocalSearch("");
+                    loadProducts(1, pageSize, "");
+                  }}
+                  style={{
+                    position: "absolute",
+                    right: "8px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "rgba(0,0,0,.45)",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                  }}
+                />
+              )}
+            </div>
             <Select placeholder="Category" style={{ width: 150 }}>
               <Option value="all">All Categories</Option>
               <Option value="pizza">Pizza</Option>
@@ -143,14 +155,18 @@ export const MenuPage = () => {
       >
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={tableData}
+          loading={loading}
           pagination={{
-            pageSize: 10,
+            current: currentPage,
+            pageSize: pageSize,
+            total: total,
             showSizeChanger: false,
+            onChange: handlePageChange,
           }}
           onRow={(record) => ({
             onClick: () => {
-              navigate(`/products/${record.id}`);
+              navigate(`/products/${record._id}`);
             },
             style: { cursor: "pointer" },
           })}

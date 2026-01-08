@@ -217,8 +217,9 @@ export const CategoriesPage = () => {
               style={{ width: 200 }}
               value={searchQuery}
               onChange={(e) => {
-                handleSearchChange(e.target.value);
-                loadCategories();
+                const newSearchValue = e.target.value;
+                handleSearchChange(newSearchValue);
+                loadCategories(1, pageSize, newSearchValue);
               }}
               allowClear
             />

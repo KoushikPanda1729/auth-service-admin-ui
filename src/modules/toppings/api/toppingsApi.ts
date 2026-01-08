@@ -18,7 +18,7 @@ export const toppingsApi = {
       params: {
         page: params.page || 1,
         limit: params.limit || 10,
-        ...(params.search && { search: params.search }),
+        ...(params.search && { q: params.search }),
       },
     });
     return response.data;

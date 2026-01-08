@@ -27,15 +27,16 @@ export const useCategories = () => {
     searchQuery,
   } = useAppSelector((state) => state.categories);
 
-  const loadCategories = async (page?: number, limit?: number) => {
+  const loadCategories = async (page?: number, limit?: number, search?: string) => {
     try {
       const pageNum = page || currentPage;
       const pageLimit = limit || pageSize;
+      const searchTerm = search !== undefined ? search : searchQuery;
       await dispatch(
         fetchCategories({
           page: pageNum,
           limit: pageLimit,
-          search: searchQuery || undefined,
+          search: searchTerm || undefined,
         })
       ).unwrap();
     } catch (err) {

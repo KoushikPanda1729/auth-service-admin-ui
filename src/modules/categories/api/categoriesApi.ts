@@ -19,7 +19,7 @@ export const categoriesApi = {
         params: {
           page: params.page || 1,
           limit: params.limit || 10,
-          ...(params.search && { search: params.search }),
+          ...(params.search && { q: params.search }),
         },
       }
     );

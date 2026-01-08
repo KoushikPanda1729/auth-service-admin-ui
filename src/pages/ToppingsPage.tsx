@@ -256,8 +256,9 @@ export const ToppingsPage = () => {
               style={{ width: 200 }}
               value={searchQuery}
               onChange={(e) => {
-                handleSearchChange(e.target.value);
-                loadToppings();
+                const newSearchValue = e.target.value;
+                handleSearchChange(newSearchValue);
+                loadToppings(1, pageSize, newSearchValue);
               }}
               allowClear
             />

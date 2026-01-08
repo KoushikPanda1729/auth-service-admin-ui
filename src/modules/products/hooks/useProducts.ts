@@ -31,17 +31,23 @@ export const useProducts = () => {
     uploadedImageUrl,
   } = useAppSelector((state) => state.products);
 
-  const loadProducts = async (page?: number, limit?: number) => {
+  const loadProducts = async (page?: number, limit?: number, search?: string) => {
     try {
       const pageNum = page || currentPage;
       const pageLimit = limit || pageSize;
-      await dispatch(
-        fetchProducts({
-          page: pageNum,
-          limit: pageLimit,
-          search: searchQuery || undefined,
-        })
-      ).unwrap();
+      const searchTerm = search !== undefined ? search : searchQuery;
+
+      // If searchTerm is empty string, don't include it in params at all
+      const params: { page: number; limit: number; search?: string } = {
+        page: pageNum,
+        limit: pageLimit,
+      };
+
+      if (searchTerm && searchTerm.trim() !== "") {
+        params.search = searchTerm;
+      }
+
+      await dispatch(fetchProducts(params)).unwrap();
     } catch (err) {
       const error = err as { message?: string };
       notification.error(error.message || "Failed to load products");
