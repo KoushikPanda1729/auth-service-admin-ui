@@ -19,6 +19,7 @@ export interface Category {
   name: string;
   priceCofigration: PriceConfiguration;
   attributes: Attribute[];
+  tenantId: string;
   isPublished?: boolean;
   createdAt?: string;
   __v: number;
@@ -41,19 +42,20 @@ export interface GetCategoriesResponse {
 
 export interface GetCategoryByIdResponse {
   message: string;
-  data: Category;
+  category: Category;
 }
 
 export interface CreateCategoryRequest {
   name: string;
   priceCofigration: PriceConfiguration;
   attributes: Omit<Attribute, "_id">[];
+  tenantId?: string;
   isPublished?: boolean;
 }
 
 export interface CreateCategoryResponse {
   message: string;
-  data: Category;
+  category: Category;
 }
 
 export interface UpdateCategoryRequest {
@@ -65,9 +67,10 @@ export interface UpdateCategoryRequest {
 
 export interface UpdateCategoryResponse {
   message: string;
-  data: Category;
+  category: Category;
 }
 
 export interface DeleteCategoryResponse {
   message: string;
+  category: Category;
 }

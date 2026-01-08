@@ -45,7 +45,7 @@ export const categoriesApi = {
     categoryId: string,
     data: UpdateCategoryRequest
   ): Promise<UpdateCategoryResponse> => {
-    const response = await axiosInstance.patch<UpdateCategoryResponse>(
+    const response = await axiosInstance.put<UpdateCategoryResponse>(
       `${CATALOG_SERVICE}/categories/${categoryId}`,
       data
     );
