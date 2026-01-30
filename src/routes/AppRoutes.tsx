@@ -51,6 +51,12 @@ const SalesPage = lazy(() => import("../pages/SalesPage").then((m) => ({ default
 const PromosPage = lazy(() =>
   import("../pages/PromosPage").then((m) => ({ default: m.PromosPage }))
 );
+const TaxConfigPage = lazy(() =>
+  import("../pages/TaxConfigPage").then((m) => ({ default: m.TaxConfigPage }))
+);
+const DeliveryConfigPage = lazy(() =>
+  import("../pages/DeliveryConfigPage").then((m) => ({ default: m.DeliveryConfigPage }))
+);
 const SettingsPage = lazy(() =>
   import("../pages/SettingsPage").then((m) => ({ default: m.SettingsPage }))
 );
@@ -170,6 +176,22 @@ export const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <PromosPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.TAX_CONFIG}
+          element={
+            <ProtectedRoute>
+              <TaxConfigPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.DELIVERY_CONFIG}
+          element={
+            <ProtectedRoute>
+              <DeliveryConfigPage />
             </ProtectedRoute>
           }
         />

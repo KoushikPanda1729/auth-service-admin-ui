@@ -5,6 +5,8 @@ import {
   ShoppingOutlined,
   ShoppingCartOutlined,
   TagOutlined,
+  PercentageOutlined,
+  CarOutlined,
   SettingOutlined,
   QuestionCircleOutlined,
   UserOutlined,
@@ -53,6 +55,16 @@ export const Sidebar = () => {
       key: ROUTES.PROMOS,
       icon: <TagOutlined />,
       label: "Coupons",
+    },
+    {
+      key: ROUTES.TAX_CONFIG,
+      icon: <PercentageOutlined />,
+      label: "Tax Config",
+    },
+    {
+      key: ROUTES.DELIVERY_CONFIG,
+      icon: <CarOutlined />,
+      label: "Delivery Config",
     },
     {
       key: ROUTES.TENANTS,

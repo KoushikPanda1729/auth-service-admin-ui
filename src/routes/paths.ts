@@ -17,6 +17,8 @@ export const ROUTES = {
   ORDER_DETAIL: "/orders/:orderId",
   SALES: "/sales",
   PROMOS: "/promos",
+  TAX_CONFIG: "/tax-config",
+  DELIVERY_CONFIG: "/delivery-config",
   SETTINGS: "/settings",
   HELP: "/help",
   NOT_FOUND: "*",
