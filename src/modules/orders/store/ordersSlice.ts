@@ -1,6 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ordersApi } from "../api/ordersApi";
-import type { Order, GetOrdersParams, GetOrdersResponse, CreateOrderRequest } from "../api/types";
+import type {
+  Order,
+  GetOrdersParams,
+  GetOrdersResponse,
+  CreateOrderRequest,
+  UpdateOrderStatusRequest,
+} from "../api/types";
 
 interface OrdersState {
   orders: Order[];
@@ -11,6 +17,8 @@ interface OrdersState {
   pageSize: number;
   total: number;
   searchQuery: string;
+  statusFilter: string;
+  tenantIdFilter: string;
 }
 
 const initialState: OrdersState = {
@@ -22,6 +30,8 @@ const initialState: OrdersState = {
   pageSize: 10,
   total: 0,
   searchQuery: "",
+  statusFilter: "",
+  tenantIdFilter: "",
 };
 
 export const fetchOrders = createAsyncThunk<GetOrdersResponse, GetOrdersParams>(
@@ -63,6 +73,19 @@ export const createOrder = createAsyncThunk<Order, CreateOrderRequest>(
   }
 );
 
+export const updateOrderStatus = createAsyncThunk<
+  Order,
+  { orderId: string; status: UpdateOrderStatusRequest["status"] }
+>("orders/updateStatus", async ({ orderId, status }, { rejectWithValue }) => {
+  try {
+    const response = await ordersApi.updateStatus(orderId, { status });
+    return response.order;
+  } catch (error) {
+    const err = error as { response?: { data?: { message?: string } } };
+    return rejectWithValue(err.response?.data?.message || "Failed to update order status");
+  }
+});
+
 const ordersSlice = createSlice({
   name: "orders",
   initialState,
@@ -75,6 +98,14 @@ const ordersSlice = createSlice({
     },
     setSearchQuery: (state, action) => {
       state.searchQuery = action.payload;
+      state.currentPage = 1;
+    },
+    setStatusFilter: (state, action) => {
+      state.statusFilter = action.payload;
+      state.currentPage = 1;
+    },
+    setTenantIdFilter: (state, action) => {
+      state.tenantIdFilter = action.payload;
       state.currentPage = 1;
     },
     clearSelectedOrder: (state) => {
@@ -121,10 +152,29 @@ const ordersSlice = createSlice({
       .addCase(createOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(updateOrderStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedOrder = action.payload;
+        state.error = null;
+      })
+      .addCase(updateOrderStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { clearError, setCurrentPage, setSearchQuery, clearSelectedOrder } =
-  ordersSlice.actions;
+export const {
+  clearError,
+  setCurrentPage,
+  setSearchQuery,
+  setStatusFilter,
+  setTenantIdFilter,
+  clearSelectedOrder,
+} = ordersSlice.actions;
 export default ordersSlice.reducer;

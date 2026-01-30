@@ -16,13 +16,7 @@ export interface OrderItem {
   name: string;
   image: string;
   qty: number;
-  priceConfiguration: {
-    [key: string]: {
-      priceType: "base" | "additional";
-      selectedOption: string;
-      selectedPrice: number;
-    };
-  };
+  priceConfiguration: Record<string, string>;
   toppings: OrderTopping[];
   totalPrice: number;
 }
@@ -40,8 +34,8 @@ export interface Order {
   taxTotal: number;
   total: number;
   paymentMode: string;
-  paymentStatus: string;
-  status: "pending" | "preparing" | "on-way" | "delivered";
+  paymentStatus: "pending" | "paid" | "failed" | "refunded";
+  status: "pending" | "confirmed" | "preparing" | "out_for_delivery" | "delivered";
   tenantId: string;
   createdAt: string;
   updatedAt: string;
@@ -51,6 +45,8 @@ export interface GetOrdersParams {
   page?: number;
   limit?: number;
   search?: string;
+  status?: string;
+  tenantId?: string;
 }
 
 export interface GetOrdersResponse {
@@ -90,6 +86,15 @@ export interface CreateOrderRequest {
 }
 
 export interface CreateOrderResponse {
+  message: string;
+  order: Order;
+}
+
+export interface UpdateOrderStatusRequest {
+  status: "pending" | "confirmed" | "preparing" | "out_for_delivery" | "delivered";
+}
+
+export interface UpdateOrderStatusResponse {
   message: string;
   order: Order;
 }

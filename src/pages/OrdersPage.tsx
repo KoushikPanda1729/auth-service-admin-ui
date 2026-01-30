@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
-import { Card, Table, Tag, Button, Input, Space } from "antd";
+import { Card, Table, Tag, Button, Input, Space, Select } from "antd";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import type { ColumnType } from "antd/es/table";
 import dayjs from "dayjs";
 import { useOrders } from "../modules/orders/hooks/useOrders";
 import type { Order } from "../modules/orders/api/types";
+
+const { Option } = Select;
 
 export const OrdersPage = () => {
   const navigate = useNavigate();
@@ -17,18 +19,19 @@ export const OrdersPage = () => {
     pageSize,
     total,
     searchQuery,
+    statusFilter,
+    tenantIdFilter,
     loadOrders,
     handlePageChange,
     handleSearchChange,
+    handleStatusFilterChange,
+    handleTenantIdFilterChange,
   } = useOrders();
 
   useEffect(() => {
-    loadOrders();
-  }, []);
-
-  useEffect(() => {
-    loadOrders(1, pageSize, searchQuery);
-  }, [searchQuery]);
+    loadOrders(1, pageSize, searchQuery, statusFilter, tenantIdFilter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, statusFilter, tenantIdFilter]);
 
   const columns: ColumnType<Order>[] = [
     {
@@ -47,12 +50,28 @@ export const OrdersPage = () => {
       key: "status",
       render: (status: string) => {
         const statusConfig: Record<string, { color: string; text: string }> = {
-          pending: { color: "gold", text: "Pending" },
+          pending: { color: "gray", text: "Pending" },
+          confirmed: { color: "gold", text: "Confirmed" },
           preparing: { color: "orange", text: "Preparing" },
-          "on-way": { color: "blue", text: "On way" },
+          out_for_delivery: { color: "blue", text: "Out for Delivery" },
           delivered: { color: "green", text: "Delivered" },
         };
         const config = statusConfig[status] || { color: "default", text: status };
+        return <Tag color={config.color}>{config.text}</Tag>;
+      },
+    },
+    {
+      title: "Payment status",
+      dataIndex: "paymentStatus",
+      key: "paymentStatus",
+      render: (paymentStatus: string) => {
+        const paymentConfig: Record<string, { color: string; text: string }> = {
+          pending: { color: "warning", text: "Pending" },
+          paid: { color: "success", text: "Paid" },
+          failed: { color: "error", text: "Failed" },
+          refunded: { color: "default", text: "Refunded" },
+        };
+        const config = paymentConfig[paymentStatus] || { color: "default", text: paymentStatus };
         return <Tag color={config.color}>{config.text}</Tag>;
       },
     },
@@ -77,6 +96,29 @@ export const OrdersPage = () => {
         title={<span style={{ fontSize: "20px", fontWeight: "600" }}>Orders</span>}
         extra={
           <Space>
+            <Select
+              placeholder="Filter by status"
+              style={{ width: 180 }}
+              value={statusFilter || undefined}
+              onChange={handleStatusFilterChange}
+              allowClear
+            >
+              <Option value="">All</Option>
+              <Option value="pending">Pending</Option>
+              <Option value="confirmed">Confirmed</Option>
+              <Option value="preparing">Preparing</Option>
+              <Option value="out_for_delivery">Out for Delivery</Option>
+              <Option value="delivered">Delivered</Option>
+            </Select>
+            <Select
+              placeholder="Filter by tenant"
+              style={{ width: 150 }}
+              value={tenantIdFilter || undefined}
+              onChange={handleTenantIdFilterChange}
+              allowClear
+            >
+              <Option value="">All Tenants</Option>
+            </Select>
             <Input
               placeholder="Search orders..."
               prefix={<SearchOutlined />}
