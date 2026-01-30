@@ -26,7 +26,6 @@ import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   CarOutlined,
-  CheckOutlined,
   ArrowLeftOutlined,
   DollarOutlined,
 } from "@ant-design/icons";
@@ -205,48 +204,58 @@ export const OrderDetailPage = () => {
       </div>
 
       <Card style={{ marginBottom: "16px", borderRadius: "12px" }}>
-        <div style={{ marginBottom: "16px" }}>
-          <Text strong>Update Order Status:</Text>
-        </div>
-        <Select
-          value={selectedOrder.status}
-          onChange={handleStatusChange}
-          style={{ width: "100%", maxWidth: "300px" }}
-        >
-          <Option value="pending">Pending</Option>
-          <Option value="confirmed">Confirmed</Option>
-          <Option value="preparing">Preparing</Option>
-          <Option value="out_for_delivery">Out for Delivery</Option>
-          <Option value="delivered">Delivered</Option>
-        </Select>
+        {selectedOrder.status === "cancelled" ? (
+          <div style={{ padding: "20px", textAlign: "center" }}>
+            <Tag color="red" style={{ fontSize: "16px", padding: "8px 16px" }}>
+              CANCELLED
+            </Tag>
+          </div>
+        ) : (
+          <>
+            <div style={{ marginBottom: "16px" }}>
+              <Text strong>Update Order Status:</Text>
+            </div>
+            <Select
+              value={selectedOrder.status}
+              onChange={handleStatusChange}
+              style={{ width: "100%", maxWidth: "300px" }}
+            >
+              <Option value="pending">Pending</Option>
+              <Option value="confirmed">Confirmed</Option>
+              <Option value="preparing">Preparing</Option>
+              <Option value="out_for_delivery">Out for Delivery</Option>
+              <Option value="delivered">Delivered</Option>
+            </Select>
 
-        <Divider />
+            <Divider />
 
-        <Steps
-          current={getStatusStep(selectedOrder.status)}
-          items={[
-            {
-              title: "Pending",
-              icon: <CheckCircleOutlined />,
-            },
-            {
-              title: "Confirmed",
-              icon: <CheckCircleOutlined />,
-            },
-            {
-              title: "Preparing",
-              icon: <ClockCircleOutlined />,
-            },
-            {
-              title: "Out for Delivery",
-              icon: <CarOutlined />,
-            },
-            {
-              title: "Delivered",
-              icon: <CheckOutlined />,
-            },
-          ]}
-        />
+            <Steps
+              current={getStatusStep(selectedOrder.status)}
+              items={[
+                {
+                  title: "Pending",
+                  icon: <CheckCircleOutlined />,
+                },
+                {
+                  title: "Confirmed",
+                  icon: <CheckCircleOutlined />,
+                },
+                {
+                  title: "Preparing",
+                  icon: <ClockCircleOutlined />,
+                },
+                {
+                  title: "Out for Delivery",
+                  icon: <CarOutlined />,
+                },
+                {
+                  title: "Delivered",
+                  icon: <CheckCircleOutlined />,
+                },
+              ]}
+            />
+          </>
+        )}
       </Card>
 
       <Row gutter={16}>

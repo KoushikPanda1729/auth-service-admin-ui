@@ -55,6 +55,7 @@ export const OrdersPage = () => {
           preparing: { color: "orange", text: "Preparing" },
           out_for_delivery: { color: "blue", text: "Out for Delivery" },
           delivered: { color: "green", text: "Delivered" },
+          cancelled: { color: "red", text: "Cancelled" },
         };
         const config = statusConfig[status] || { color: "default", text: status };
         return <Tag color={config.color}>{config.text}</Tag>;
@@ -109,6 +110,7 @@ export const OrdersPage = () => {
               <Option value="preparing">Preparing</Option>
               <Option value="out_for_delivery">Out for Delivery</Option>
               <Option value="delivered">Delivered</Option>
+              <Option value="cancelled">Cancelled</Option>
             </Select>
             <Select
               placeholder="Filter by tenant"

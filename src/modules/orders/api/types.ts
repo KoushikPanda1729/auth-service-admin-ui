@@ -35,7 +35,7 @@ export interface Order {
   total: number;
   paymentMode: string;
   paymentStatus: "pending" | "paid" | "failed" | "refunded";
-  status: "pending" | "confirmed" | "preparing" | "out_for_delivery" | "delivered";
+  status: "pending" | "confirmed" | "preparing" | "out_for_delivery" | "delivered" | "cancelled";
   tenantId: string;
   createdAt: string;
   updatedAt: string;
