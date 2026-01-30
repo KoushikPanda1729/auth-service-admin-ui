@@ -1,27 +1,40 @@
+import { useEffect } from "react";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
 import { Card, Table, Tag, Button, Input, Space } from "antd";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import type { ColumnType } from "antd/es/table";
-
-interface OrderData {
-  key: string;
-  id: string;
-  customerName: string;
-  address: string;
-  status: "preparing" | "delivered" | "on-way";
-  amount: number;
-  placedTime: string;
-}
+import dayjs from "dayjs";
+import { useOrders } from "../modules/orders/hooks/useOrders";
+import type { Order } from "../modules/orders/api/types";
 
 export const OrdersPage = () => {
   const navigate = useNavigate();
+  const {
+    orders,
+    loading,
+    currentPage,
+    pageSize,
+    total,
+    searchQuery,
+    loadOrders,
+    handlePageChange,
+    handleSearchChange,
+  } = useOrders();
 
-  const columns: ColumnType<OrderData>[] = [
+  useEffect(() => {
+    loadOrders();
+  }, []);
+
+  useEffect(() => {
+    loadOrders(1, pageSize, searchQuery);
+  }, [searchQuery]);
+
+  const columns: ColumnType<Order>[] = [
     {
-      title: "Customer name",
-      dataIndex: "customerName",
-      key: "customerName",
+      title: "Customer ID",
+      dataIndex: "customerId",
+      key: "customerId",
     },
     {
       title: "Address",
@@ -33,73 +46,27 @@ export const OrdersPage = () => {
       dataIndex: "status",
       key: "status",
       render: (status: string) => {
-        const statusConfig = {
+        const statusConfig: Record<string, { color: string; text: string }> = {
+          pending: { color: "gold", text: "Pending" },
           preparing: { color: "orange", text: "Preparing" },
-          delivered: { color: "green", text: "Delivered" },
           "on-way": { color: "blue", text: "On way" },
+          delivered: { color: "green", text: "Delivered" },
         };
-        const config = statusConfig[status as keyof typeof statusConfig];
+        const config = statusConfig[status] || { color: "default", text: status };
         return <Tag color={config.color}>{config.text}</Tag>;
       },
     },
     {
       title: "Order amount",
-      dataIndex: "amount",
-      key: "amount",
-      render: (amount: number) => `₹ ${amount}`,
+      dataIndex: "total",
+      key: "total",
+      render: (total: number) => `₹ ${total}`,
     },
     {
       title: "Placed time",
-      dataIndex: "placedTime",
-      key: "placedTime",
-    },
-  ];
-
-  const data: OrderData[] = [
-    {
-      key: "1",
-      id: "3423232",
-      customerName: "Rakesh Kohali",
-      address: "Main street, Bandra, Mumbai 403 515",
-      status: "preparing",
-      amount: 1250,
-      placedTime: "25 July 2022 11:30 PM",
-    },
-    {
-      key: "2",
-      id: "3423233",
-      customerName: "John Doe",
-      address: "Left street, Bandra, Mumbai 403 515",
-      status: "delivered",
-      amount: 1000,
-      placedTime: "25 July 2022 11:30 PM",
-    },
-    {
-      key: "3",
-      id: "3423234",
-      customerName: "Jane Doe",
-      address: "Down street, Bandra, Mumbai 403 515",
-      status: "on-way",
-      amount: 650,
-      placedTime: "25 July 2022 11:30 PM",
-    },
-    {
-      key: "4",
-      id: "3423235",
-      customerName: "Jane Doe",
-      address: "Down street, Bandra, Mumbai 403 515",
-      status: "delivered",
-      amount: 4500,
-      placedTime: "25 July 2022 11:30 PM",
-    },
-    {
-      key: "5",
-      id: "3423236",
-      customerName: "Jane Doe",
-      address: "Down street, Bandra, Mumbai 403 515",
-      status: "preparing",
-      amount: 900,
-      placedTime: "25 July 2022 11:30 PM",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt: string) => dayjs(createdAt).format("DD MMM YYYY hh:mm A"),
     },
   ];
 
@@ -114,6 +81,9 @@ export const OrdersPage = () => {
               placeholder="Search orders..."
               prefix={<SearchOutlined />}
               style={{ width: 250 }}
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              allowClear
             />
             <Button type="primary" icon={<PlusOutlined />} style={{ background: "#ff4d4f" }}>
               Create order
@@ -123,14 +93,19 @@ export const OrdersPage = () => {
       >
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={orders}
+          rowKey="_id"
+          loading={loading}
           pagination={{
-            pageSize: 10,
+            current: currentPage,
+            pageSize: pageSize,
+            total: total,
             showSizeChanger: false,
+            onChange: handlePageChange,
           }}
           onRow={(record) => ({
             onClick: () => {
-              navigate(`/orders/${record.id}`);
+              navigate(`/orders/${record._id}`);
             },
             style: { cursor: "pointer" },
           })}
