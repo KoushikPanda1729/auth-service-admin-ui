@@ -33,6 +33,8 @@ export interface Order {
   taxes: OrderTax[];
   taxTotal: number;
   total: number;
+  walletCreditsApplied?: number;
+  finalTotal: number;
   paymentMode: string;
   paymentStatus: "pending" | "paid" | "failed" | "refunded";
   status: "pending" | "confirmed" | "preparing" | "out_for_delivery" | "delivered" | "cancelled";

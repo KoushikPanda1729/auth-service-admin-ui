@@ -82,7 +82,9 @@ export const OrderDetailPage = () => {
 
   // Calculate total refunded amount
   const totalRefunded = refunds.reduce((sum, refund) => sum + (refund.amount || 0), 0) / 100;
-  const isFullyRefunded = selectedOrder && totalRefunded >= selectedOrder.total;
+  const maxRefundableTotal = selectedOrder?.total ?? 0;
+  const isFullyRefunded = selectedOrder && totalRefunded >= maxRefundableTotal;
+  const remainingRefundable = Math.max(0, maxRefundableTotal - totalRefunded);
 
   const handleStatusChange = async (newStatus: string) => {
     if (orderId && newStatus) {
@@ -375,10 +377,38 @@ export const OrderDetailPage = () => {
               <Text strong style={{ fontSize: "16px" }}>
                 Total:
               </Text>
-              <Text strong style={{ fontSize: "18px", color: "#ff4d4f" }}>
+              <Text strong style={{ fontSize: "18px" }}>
                 ₹{selectedOrder.total.toFixed(2)}
               </Text>
             </div>
+            {(selectedOrder.walletCreditsApplied ?? 0) > 0 && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginTop: "8px",
+                  }}
+                >
+                  <Text style={{ color: "#52c41a" }}>Wallet Credits Used:</Text>
+                  <Text style={{ color: "#52c41a" }}>
+                    -₹{(selectedOrder.walletCreditsApplied ?? 0).toFixed(2)}
+                  </Text>
+                </div>
+                <Divider style={{ margin: "8px 0" }} />
+                <div
+                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                >
+                  <Text strong style={{ fontSize: "16px" }}>
+                    Amount Charged:
+                  </Text>
+                  <Text strong style={{ fontSize: "18px", color: "#ff4d4f" }}>
+                    ₹{selectedOrder.finalTotal.toFixed(2)}
+                  </Text>
+                </div>
+              </>
+            )}
           </Card>
 
           <Card
@@ -446,6 +476,35 @@ export const OrderDetailPage = () => {
         }}
         footer={null}
       >
+        {/* Payment Breakdown */}
+        <Card size="small" style={{ marginBottom: "16px", background: "#fafafa" }}>
+          <Descriptions column={1} size="small">
+            <Descriptions.Item label="Order Total">
+              ₹{selectedOrder?.total.toFixed(2)}
+            </Descriptions.Item>
+            {(selectedOrder?.walletCreditsApplied ?? 0) > 0 && (
+              <Descriptions.Item label="Wallet Credits Used">
+                <Text style={{ color: "#52c41a" }}>
+                  ₹{(selectedOrder?.walletCreditsApplied ?? 0).toFixed(2)}
+                </Text>
+              </Descriptions.Item>
+            )}
+            {(selectedOrder?.walletCreditsApplied ?? 0) > 0 && (
+              <Descriptions.Item label="Paid via Gateway">
+                ₹{selectedOrder?.finalTotal.toFixed(2)}
+              </Descriptions.Item>
+            )}
+            {totalRefunded > 0 && (
+              <Descriptions.Item label="Already Refunded">
+                <Text type="danger">₹{totalRefunded.toFixed(2)}</Text>
+              </Descriptions.Item>
+            )}
+            <Descriptions.Item label="Remaining Refundable">
+              <Text strong>₹{remainingRefundable.toFixed(2)}</Text>
+            </Descriptions.Item>
+          </Descriptions>
+        </Card>
+
         <Form
           form={form}
           layout="vertical"
@@ -462,7 +521,7 @@ export const OrderDetailPage = () => {
                 }
               }}
             >
-              <Text strong>Full Refund</Text>
+              <Text strong>Full Refund (₹{remainingRefundable.toFixed(2)})</Text>
             </Checkbox>
           </Form.Item>
 
@@ -478,8 +537,8 @@ export const OrderDetailPage = () => {
                 {
                   type: "number",
                   min: 1,
-                  max: selectedOrder?.total || 0,
-                  message: `Amount must be between ₹1 and ₹${selectedOrder?.total || 0}`,
+                  max: remainingRefundable,
+                  message: `Amount must be between ₹1 and ₹${remainingRefundable.toFixed(2)}`,
                 },
               ]}
             >
@@ -488,7 +547,7 @@ export const OrderDetailPage = () => {
                 placeholder="Enter refund amount"
                 prefix="₹"
                 min={1}
-                max={selectedOrder?.total || 0}
+                max={remainingRefundable}
               />
             </Form.Item>
           )}
