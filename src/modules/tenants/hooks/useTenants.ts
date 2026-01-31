@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
   fetchTenants,
@@ -36,14 +37,17 @@ export const useTenants = () => {
     }
   };
 
-  const loadTenantById = async (tenantId: number) => {
-    try {
-      await dispatch(fetchTenantById(tenantId)).unwrap();
-    } catch (err) {
-      const error = err as { message?: string };
-      notification.error(error.message || "Failed to load tenant");
-    }
-  };
+  const loadTenantById = useCallback(
+    async (tenantId: number) => {
+      try {
+        await dispatch(fetchTenantById(tenantId)).unwrap();
+      } catch (err) {
+        const error = err as { message?: string };
+        notification.error(error.message || "Failed to load tenant");
+      }
+    },
+    [dispatch]
+  );
 
   const handleCreateTenant = async (data: CreateTenantRequest) => {
     try {

@@ -5,6 +5,7 @@ export interface Coupon {
   discount: number;
   validUpto: string;
   tenantId: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -56,4 +57,9 @@ export interface UpdateCouponResponse {
 
 export interface DeleteCouponResponse {
   message: string;
+}
+
+export interface ToggleCouponResponse {
+  message: string;
+  coupon: Coupon;
 }

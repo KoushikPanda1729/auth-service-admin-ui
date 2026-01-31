@@ -8,6 +8,7 @@ import type {
   UpdateCouponRequest,
   UpdateCouponResponse,
   DeleteCouponResponse,
+  ToggleCouponResponse,
 } from "./types";
 import { BILLING_SERVICE } from "../../../config/apiConfig";
 
@@ -48,6 +49,13 @@ export const couponsApi = {
   delete: async (couponId: string): Promise<DeleteCouponResponse> => {
     const response = await axiosInstance.delete<DeleteCouponResponse>(
       `${BILLING_SERVICE}/coupons/${couponId}`
+    );
+    return response.data;
+  },
+
+  toggleStatus: async (couponId: string): Promise<ToggleCouponResponse> => {
+    const response = await axiosInstance.patch<ToggleCouponResponse>(
+      `${BILLING_SERVICE}/coupons/${couponId}/toggle-status`
     );
     return response.data;
   },

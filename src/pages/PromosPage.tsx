@@ -13,6 +13,7 @@ import {
   InputNumber,
   message,
   Dropdown,
+  Switch,
 } from "antd";
 import {
   PlusOutlined,
@@ -108,6 +109,16 @@ export const PromosPage = () => {
     });
   };
 
+  const handleToggleStatus = async (coupon: Coupon) => {
+    try {
+      const response = await couponsApi.toggleStatus(coupon._id);
+      setCoupons((prev) => prev.map((c) => (c._id === coupon._id ? response.coupon : c)));
+      message.success(response.message);
+    } catch (error) {
+      message.error("Failed to toggle coupon status");
+    }
+  };
+
   const getActionMenu = (record: Coupon): MenuProps => ({
     items: [
       {
@@ -143,9 +154,27 @@ export const PromosPage = () => {
       render: (code: string) => <Tag>{code.toUpperCase()}</Tag>,
     },
     {
+      title: "Active",
+      key: "isActive",
+      render: (_, record) => (
+        <Switch
+          checked={record.isActive !== false}
+          onChange={() => handleToggleStatus(record)}
+          checkedChildren="Active"
+          unCheckedChildren="Inactive"
+          style={{
+            backgroundColor: record.isActive !== false ? "#4878f5" : undefined,
+          }}
+        />
+      ),
+    },
+    {
       title: "Status",
       key: "status",
       render: (_, record) => {
+        if (record.isActive === false) {
+          return <Tag color="red">Inactive</Tag>;
+        }
         const isExpired = isCouponExpired(record.validUpto);
         return <Tag color={isExpired ? "default" : "green"}>{isExpired ? "Expired" : "Valid"}</Tag>;
       },
@@ -184,8 +213,13 @@ export const PromosPage = () => {
     statusFilter === "all"
       ? coupons
       : coupons.filter((coupon) => {
+          if (statusFilter === "inactive") {
+            return coupon.isActive === false;
+          }
           const isExpired = isCouponExpired(coupon.validUpto);
-          return statusFilter === "expired" ? isExpired : !isExpired;
+          if (statusFilter === "expired") return isExpired;
+          // "valid" means active and not expired
+          return coupon.isActive !== false && !isExpired;
         });
 
   const handleSave = async () => {
@@ -255,6 +289,7 @@ export const PromosPage = () => {
               <Option value="all">Status</Option>
               <Option value="valid">Valid</Option>
               <Option value="expired">Expired</Option>
+              <Option value="inactive">Inactive</Option>
             </Select>
             <Button
               type="primary"
