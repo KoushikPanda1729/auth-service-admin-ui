@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
-import { Card, Table, Tag, Button, Input, Space, Select } from "antd";
-import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
+import { Card, Table, Tag, Button, Input, Space, Select, Modal } from "antd";
+import { SearchOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import type { ColumnType } from "antd/es/table";
 import dayjs from "dayjs";
@@ -22,11 +22,26 @@ export const OrdersPage = () => {
     statusFilter,
     tenantIdFilter,
     loadOrders,
+    handleDeleteOrder,
     handlePageChange,
     handleSearchChange,
     handleStatusFilterChange,
     handleTenantIdFilterChange,
   } = useOrders();
+
+  const handleDelete = (e: React.MouseEvent, order: Order) => {
+    e.stopPropagation();
+    Modal.confirm({
+      title: "Delete Order",
+      content: "Are you sure you want to delete this order?",
+      okText: "Delete",
+      okType: "danger",
+      cancelText: "Cancel",
+      onOk: async () => {
+        await handleDeleteOrder(order._id);
+      },
+    });
+  };
 
   useEffect(() => {
     loadOrders(1, pageSize, searchQuery, statusFilter, tenantIdFilter);
@@ -87,6 +102,19 @@ export const OrdersPage = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       render: (createdAt: string) => dayjs(createdAt).format("DD MMM YYYY hh:mm A"),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      width: 80,
+      render: (_, record) => (
+        <Button
+          type="text"
+          danger
+          icon={<DeleteOutlined />}
+          onClick={(e) => handleDelete(e, record)}
+        />
+      ),
     },
   ];
 

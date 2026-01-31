@@ -49,4 +49,8 @@ export const ordersApi = {
     );
     return response.data;
   },
+
+  delete: async (orderId: string): Promise<void> => {
+    await axiosInstance.delete(`${BILLING_SERVICE}/orders/${orderId}`);
+  },
 };

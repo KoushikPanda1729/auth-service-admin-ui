@@ -4,6 +4,7 @@ import {
   fetchOrderById,
   createOrder,
   updateOrderStatus,
+  deleteOrder,
   clearError,
   setCurrentPage,
   setSearchQuery,
@@ -110,6 +111,19 @@ export const useOrders = () => {
     }
   };
 
+  const handleDeleteOrder = async (orderId: string) => {
+    try {
+      await dispatch(deleteOrder(orderId)).unwrap();
+      notification.success("Order deleted successfully");
+      await loadOrders();
+      return true;
+    } catch (err) {
+      const error = err as { message?: string };
+      notification.error(error.message || "Failed to delete order");
+      return false;
+    }
+  };
+
   const handlePageChange = (page: number) => {
     dispatch(setCurrentPage(page));
     loadOrders(page);
@@ -150,6 +164,7 @@ export const useOrders = () => {
     loadOrderById,
     handleCreateOrder,
     handleUpdateStatus,
+    handleDeleteOrder,
     handlePageChange,
     handleSearchChange,
     handleStatusFilterChange,

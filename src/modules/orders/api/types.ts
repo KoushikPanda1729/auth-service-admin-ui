@@ -100,3 +100,8 @@ export interface UpdateOrderStatusResponse {
   message: string;
   order: Order;
 }
+
+export interface DeleteOrderResponse {
+  message: string;
+  order: Order;
+}

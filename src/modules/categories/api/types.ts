@@ -2,7 +2,7 @@ export interface PriceConfiguration {
   [key: string]: {
     priceType: "base" | "additional";
     availableOptions: string[];
-    _id: string;
+    _id?: string;
   };
 }
 
