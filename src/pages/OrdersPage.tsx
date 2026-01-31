@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import type { ColumnType } from "antd/es/table";
 import dayjs from "dayjs";
 import { useOrders } from "../modules/orders/hooks/useOrders";
+import { useOrderSocket } from "../modules/orders/hooks/useOrderSocket";
 import type { Order } from "../modules/orders/api/types";
 
 const { Option } = Select;
@@ -28,6 +29,12 @@ export const OrdersPage = () => {
     handleStatusFilterChange,
     handleTenantIdFilterChange,
   } = useOrders();
+
+  useOrderSocket({
+    onOrderUpdate: () => {
+      loadOrders(currentPage, pageSize, searchQuery, statusFilter, tenantIdFilter);
+    },
+  });
 
   const handleDelete = (e: React.MouseEvent, order: Order) => {
     e.stopPropagation();

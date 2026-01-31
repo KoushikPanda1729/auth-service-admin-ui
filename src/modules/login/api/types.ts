@@ -13,6 +13,7 @@ export interface User {
   lastName: string;
   email: string;
   role: string;
+  tenant?: { id: number; name: string; address: string } | null;
 }
 
 export interface RefreshTokenResponse {
