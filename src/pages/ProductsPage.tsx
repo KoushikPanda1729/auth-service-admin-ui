@@ -227,7 +227,7 @@ export const ProductsPage = () => {
             if (categoryConfig) {
               transformedPriceConfig[configKey] = {
                 priceType: categoryConfig.priceType,
-                availableOptions: Object.entries(options as Record<string, string>).reduce(
+                availableOptions: Object.entries(options as Record<string, number>).reduce(
                   (acc, [option, price]) => {
                     acc[option] = Number(price);
                     return acc;

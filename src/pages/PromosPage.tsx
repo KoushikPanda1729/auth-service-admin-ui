@@ -378,7 +378,9 @@ export const PromosPage = () => {
                 placeholder="Select restaurant"
                 showSearch
                 filterOption={(input, option) =>
-                  (option?.children as string).toLowerCase().includes(input.toLowerCase())
+                  String(option?.children ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
                 }
                 loading={tenantsLoading}
                 disabled={tenantsLoading || tenants.length === 0}
