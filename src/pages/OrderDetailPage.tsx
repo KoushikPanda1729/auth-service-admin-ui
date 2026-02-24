@@ -28,10 +28,16 @@ import {
   CarOutlined,
   ArrowLeftOutlined,
   DollarOutlined,
+  PhoneOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 import { useOrders } from "../modules/orders/hooks/useOrders";
 import { paymentsApi } from "../modules/payments/api";
 import { RefundDetails } from "../modules/payments/api/types";
+import { CallModal } from "../components/call/CallModal";
+import { adminCallService } from "../services/call/callService";
+import { ChatDrawer } from "../components/chat/ChatDrawer";
+import { useAppSelector } from "../app/hooks";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -45,7 +51,18 @@ export const OrderDetailPage = () => {
   const [isFullRefund, setIsFullRefund] = useState(true);
   const [refunds, setRefunds] = useState<RefundDetails[]>([]);
   const [loadingRefunds, setLoadingRefunds] = useState(false);
+  const [callModalOpen, setCallModalOpen] = useState(false);
+  const [chatDrawerOpen, setChatDrawerOpen] = useState(false);
   const [form] = Form.useForm();
+
+  const adminUser = useAppSelector((state) => state.login.user);
+
+  // Connect to calling service when admin user is available
+  useEffect(() => {
+    if (adminUser?.id) {
+      adminCallService.connect(adminUser.id);
+    }
+  }, [adminUser?.id]);
 
   useEffect(() => {
     if (orderId) {
@@ -187,22 +204,39 @@ export const OrderDetailPage = () => {
             Order #{orderId}
           </Title>
         </Space>
-        <Button
-          type="primary"
-          danger
-          icon={<DollarOutlined />}
-          onClick={() => setRefundModalVisible(true)}
-          disabled={selectedOrder?.paymentStatus !== "paid" || !!isFullyRefunded}
-          title={
-            isFullyRefunded
-              ? "Order has been fully refunded"
-              : selectedOrder?.paymentStatus !== "paid"
-                ? "Payment must be completed to refund"
-                : "Refund order"
-          }
-        >
-          Refund
-        </Button>
+        <Space>
+          <Button
+            icon={<MessageOutlined />}
+            onClick={() => setChatDrawerOpen(true)}
+            style={{ backgroundColor: "#1677ff", color: "#fff", border: "none" }}
+          >
+            Chat
+          </Button>
+          <Button
+            type="primary"
+            icon={<PhoneOutlined />}
+            onClick={() => setCallModalOpen(true)}
+            style={{ backgroundColor: "#52c41a", border: "none" }}
+          >
+            Call Customer
+          </Button>
+          <Button
+            type="primary"
+            danger
+            icon={<DollarOutlined />}
+            onClick={() => setRefundModalVisible(true)}
+            disabled={selectedOrder?.paymentStatus !== "paid" || !!isFullyRefunded}
+            title={
+              isFullyRefunded
+                ? "Order has been fully refunded"
+                : selectedOrder?.paymentStatus !== "paid"
+                  ? "Payment must be completed to refund"
+                  : "Refund order"
+            }
+          >
+            Refund
+          </Button>
+        </Space>
       </div>
 
       <Card style={{ marginBottom: "16px", borderRadius: "12px" }}>
@@ -570,6 +604,27 @@ export const OrderDetailPage = () => {
           </Form.Item>
         </Form>
       </Modal>
+
+      {/* Chat Drawer */}
+      {adminUser && (
+        <ChatDrawer
+          open={chatDrawerOpen}
+          onClose={() => setChatDrawerOpen(false)}
+          roomId={String(selectedOrder.customerId)}
+          roomLabel={`Customer #${selectedOrder.customerId}`}
+          adminId={String(adminUser.id)}
+          adminName={`${adminUser.firstName} ${adminUser.lastName}`}
+        />
+      )}
+
+      {/* Call Modal */}
+      <CallModal
+        open={callModalOpen}
+        customerId={selectedOrder.customerId}
+        customerLabel={`Customer #${selectedOrder.customerId}`}
+        callerName={adminUser ? `${adminUser.firstName} ${adminUser.lastName}` : "Admin"}
+        onClose={() => setCallModalOpen(false)}
+      />
     </DashboardLayout>
   );
 };
